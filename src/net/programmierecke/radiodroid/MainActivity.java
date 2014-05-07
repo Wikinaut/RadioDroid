@@ -18,8 +18,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class MainActivity extends ListActivity {
-	private String itsAdressWWWTopClick25 = "http://www.radio-browser.info/webservice/json/stations/topclick/25";
-	private String itsAdressWWWTopVote25 = "http://www.radio-browser.info/webservice/json/stations/topvote/25";
+	private String itsAdressWWWTopClick = "http://www.radio-browser.info/webservice/json/stations/topclick/200";
+	private String itsAdressWWWTopVote = "http://www.radio-browser.info/webservice/json/stations/topvote/200";
 
 	ProgressDialog itsProgressLoading;
 	RadioItemBigAdapter itsArrayAdapter = null;
@@ -73,7 +73,7 @@ public class MainActivity extends ListActivity {
 		itsArrayAdapter = new RadioItemBigAdapter(this, R.layout.list_item_big);
 		setListAdapter(itsArrayAdapter);
 
-		RefillList(itsAdressWWWTopClick25);
+		RefillList(itsAdressWWWTopClick);
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -137,13 +137,13 @@ public class MainActivity extends ListActivity {
 		// check selected menu item
 		if (item.getItemId() == MENU_TOPVOTE) {
 			Log.v(TAG, "menu : topvote");
-			RefillList(itsAdressWWWTopVote25);
+			RefillList(itsAdressWWWTopVote);
 			setTitle("TopVote");
 			return true;
 		}
 		if (item.getItemId() == MENU_TOPCLICK) {
 			Log.v(TAG, "menu : topclick");
-			RefillList(itsAdressWWWTopClick25);
+			RefillList(itsAdressWWWTopClick);
 			setTitle("TopClick");
 			return true;
 		}

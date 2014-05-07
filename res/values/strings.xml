@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="app_name">RadioDroid</string>
-<string name="detail_name">Name</string>
+
+   <color name="green">#ff00ff00</color>
+
+    <string name="detail_name">Station</string>
     <string name="detail_tags">Tags</string>
     <string name="detail_country">Country</string>
     <string name="detail_language">Language</string>
-    <string name="detail_weblink">Weblink</string>
+    <string name="detail_weblink">Homepage</string>
+    <string name="detail_stream_url_title">Stream</string>
     <string name="detail_play">Play</string>
     <string name="detail_stop">Stop</string>
 </resources>

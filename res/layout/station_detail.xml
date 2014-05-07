@@ -8,15 +8,18 @@
     <TextView
         android:id="@+id/detail_station_name"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dip"
         android:text="@string/detail_name"
-        android:textSize="20sp" />
+        android:textSize="0dip" />
 
     <TextView
         android:id="@+id/detail_station_name_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:background="#FF0000FF"
+        android:textColor="#FFFFFFFF"
+        android:textStyle="bold"
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -28,13 +31,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/detail_tags"
-        android:textSize="20sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/detail_station_tags_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -46,13 +49,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/detail_country"
-        android:textSize="20sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/detail_station_country_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -64,13 +67,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/detail_language"
-        android:textSize="20sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/detail_station_language_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -90,20 +93,38 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/detail_weblink"
-            android:textSize="20sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/detail_station_www_value"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
+   <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:background="#dcdcdc" />
+ 
+    <TextView
+            android:id="@+id/detail_stream_url_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_stream_url_title"
+            android:textSize="12sp" />
+
+    <TextView
+            android:id="@+id/detail_stream_url_value"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp" />
+    
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="2dip"
         android:background="#dcdcdc" />
-
+    
     <Button
         android:id="@+id/detail_button_play"
         android:layout_width="fill_parent"

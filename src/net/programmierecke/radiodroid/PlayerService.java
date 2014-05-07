@@ -231,7 +231,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	@Override
 	public void onBufferingUpdate(MediaPlayer mp, int percent) {
 		// Log.v(TAG, "Buffering:" + percent);
-		// SendMessage(itsStationName, "Buffering..", "Buffering .. (" + percent +
-		// "%)");
+		SendMessage(itsStationName, "Buffering..", "Buffering .. (" + percent + "%)");
 	}
 }

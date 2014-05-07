@@ -54,7 +54,9 @@ public class RadioDroidStationDetail extends Activity {
 						Log.v("", "onPostExecute3:" + aStationList.length);
 						if (aStationList.length == 1) {
 							Log.v("", "onPostExecute4");
-							setStation(aStationList[0]);
+							itsStation = aStationList[0];
+							setStation(itsStation);
+							Play();
 						}
 					}
 				}
@@ -82,6 +84,9 @@ public class RadioDroidStationDetail extends Activity {
 
 		TextView aTextViewWWW = (TextView) findViewById(R.id.detail_station_www_value);
 		aTextViewWWW.setText(radioStation.HomePageUrl);
+
+		TextView aTextViewStream = (TextView) findViewById(R.id.detail_stream_url_value);
+		aTextViewStream.setText(radioStation.StreamUrl);
 
 		final String aLink = itsStation.HomePageUrl;
 		LinearLayout aLinLayoutWWW = (LinearLayout) findViewById(R.id.detail_station_www_clickable);
