@@ -18,9 +18,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class RadioDroidStationDetail extends Activity {
-	ProgressDialog itsProgressLoading;
-	RadioStation itsStation;
+public class RadioStationDetailActivity extends Activity {
+	ProgressDialog thisProgressLoading;
+	RadioStation thisStation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class RadioDroidStationDetail extends Activity {
 		bindService(anIntent, svcConn, BIND_AUTO_CREATE);
 		startService(anIntent);
 
-		itsProgressLoading = ProgressDialog.show(RadioDroidStationDetail.this, "", "Loading...");
+		thisProgressLoading = ProgressDialog.show(RadioStationDetailActivity.this, "", "Loading...");
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
@@ -54,13 +54,13 @@ public class RadioDroidStationDetail extends Activity {
 						Log.v("", "onPostExecute3:" + aStationList.length);
 						if (aStationList.length == 1) {
 							Log.v("", "onPostExecute4");
-							itsStation = aStationList[0];
-							setStation(itsStation);
+							thisStation = aStationList[0];
+							setStation(thisStation);
 							Play();
 						}
 					}
 				}
-				itsProgressLoading.dismiss();
+				thisProgressLoading.dismiss();
 				super.onPostExecute(result);
 			}
 
@@ -68,33 +68,33 @@ public class RadioDroidStationDetail extends Activity {
 	}
 
 	private void setStation(RadioStation radioStation) {
-		itsStation = radioStation;
+		thisStation = radioStation;
 
-		TextView aTextViewName = (TextView) findViewById(R.id.detail_station_name_value);
+		TextView aTextViewName = (TextView) findViewById(R.id.stationdetail_name_value);
 		aTextViewName.setText(radioStation.Name);
 
-		TextView aTextViewCountry = (TextView) findViewById(R.id.detail_station_country_value);
+		TextView aTextViewCountry = (TextView) findViewById(R.id.stationdetail_country_value);
 		aTextViewCountry.setText(radioStation.Country);
 
-		TextView aTextViewLanguage = (TextView) findViewById(R.id.detail_station_language_value);
+		TextView aTextViewLanguage = (TextView) findViewById(R.id.stationdetail_language_value);
 		aTextViewLanguage.setText(radioStation.Language);
 
-		TextView aTextViewTags = (TextView) findViewById(R.id.detail_station_tags_value);
+		TextView aTextViewTags = (TextView) findViewById(R.id.stationdetail_tags_value);
 		aTextViewTags.setText(radioStation.TagsAll);
 
-		TextView aTextViewWWW = (TextView) findViewById(R.id.detail_station_www_value);
-		aTextViewWWW.setText(radioStation.HomePageUrl);
+		TextView aTextViewHompageUrl = (TextView) findViewById(R.id.stationdetail_homepage_url_value);
+		aTextViewHompageUrl.setText(radioStation.HomePageUrl);
 
 		TextView aTextViewStream = (TextView) findViewById(R.id.detail_stream_url_value);
 		aTextViewStream.setText(radioStation.StreamUrl);
 
-		final String aLink = itsStation.HomePageUrl;
-		LinearLayout aLinLayoutWWW = (LinearLayout) findViewById(R.id.detail_station_www_clickable);
-		aLinLayoutWWW.setOnClickListener(new View.OnClickListener() {
+		final String aLink = thisStation.HomePageUrl;
+		LinearLayout aLinLayoutHompageUrl = (LinearLayout) findViewById(R.id.stationdetail_homepage_url_clickable);
+		aLinLayoutHompageUrl.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (aLink.toLowerCase(Locale.US).startsWith("http")) {
-					Intent aWWWIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(aLink));
-					startActivity(aWWWIntent);
+					Intent aHompageUrlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(aLink));
+					startActivity(aHompageUrlIntent);
 				}
 			}
 		});
@@ -115,9 +115,9 @@ public class RadioDroidStationDetail extends Activity {
 	}
 
 	private void Play() {
-		if (itsPlayerService != null) {
+		if (thisPlayerService != null) {
 			try {
-				itsPlayerService.Play(itsStation.StreamUrl, itsStation.Name, itsStation.ID);
+				thisPlayerService.Play(thisStation.StreamUrl, thisStation.Name, thisStation.ID);
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
 			}
@@ -125,25 +125,25 @@ public class RadioDroidStationDetail extends Activity {
 	}
 
 	private void Stop() {
-		if (itsPlayerService != null) {
+		if (thisPlayerService != null) {
 			try {
-				itsPlayerService.Stop();
+				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
 			}
 		}
 	}
 
-	IPlayerService itsPlayerService;
+	IPlayerService thisPlayerService;
 	private ServiceConnection svcConn = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			Log.v("", "Service came online");
-			itsPlayerService = IPlayerService.Stub.asInterface(binder);
+			thisPlayerService = IPlayerService.Stub.asInterface(binder);
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
 			Log.v("", "Service offline");
-			itsPlayerService = null;
+			thisPlayerService = null;
 		}
 	};
 }

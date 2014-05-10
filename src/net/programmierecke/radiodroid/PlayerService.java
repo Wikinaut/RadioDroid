@@ -33,9 +33,9 @@ import android.util.Log;
 public class PlayerService extends Service implements OnBufferingUpdateListener {
 	protected static final int NOTIFY_ID = 1;
 	final String TAG = "PlayerService";
-	MediaPlayer itsMediaPlayer = null;
+	MediaPlayer thisMediaPlayer = null;
 
-	private final IPlayerService.Stub itsBinder = new IPlayerService.Stub() {
+	private final IPlayerService.Stub thisBinder = new IPlayerService.Stub() {
 
 		public void Play(String theUrl, String theName, String theID) throws RemoteException {
 			PlayerService.this.PlayUrl(theUrl, theName, theID);
@@ -47,35 +47,35 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 		@Override
 		public String getCurrentStationID() throws RemoteException {
-			if (itsMediaPlayer == null)
+			if (thisMediaPlayer == null)
 				return null;
-			if (!itsMediaPlayer.isPlaying())
+			if (!thisMediaPlayer.isPlaying())
 				return null;
-			return itsStationID;
+			return thisStationID;
 		}
 	};
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		return itsBinder;
+		return thisBinder;
 	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		itsContext = this;
+		thisContext = this;
 	}
 
 	public void SendMessage(String theTitle, String theMessage, String theTicker) {
-		Intent notificationIntent = new Intent(itsContext, RadioDroidStationDetail.class);
-		notificationIntent.putExtra("stationid", itsStationID);
+		Intent notificationIntent = new Intent(thisContext, RadioStationDetailActivity.class);
+		notificationIntent.putExtra("stationid", thisStationID);
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent contentIntent = PendingIntent.getActivity(itsContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-		Notification itsNotification = new NotificationCompat.Builder(itsContext).setContentIntent(contentIntent).setContentTitle(theTitle)
+		PendingIntent contentIntent = PendingIntent.getActivity(thisContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Notification thisNotification = new NotificationCompat.Builder(thisContext).setContentIntent(contentIntent).setContentTitle(theTitle)
 				.setContentText(theMessage).setWhen(System.currentTimeMillis()).setTicker(theTicker).setOngoing(true).setUsesChronometer(true)
 				.setSmallIcon(R.drawable.play).setLargeIcon((((BitmapDrawable) getResources().getDrawable(R.drawable.ic_launcher)).getBitmap())).build();
 
-		startForeground(NOTIFY_ID, itsNotification);
+		startForeground(NOTIFY_ID, thisNotification);
 	}
 
 	@Override
@@ -84,52 +84,52 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		stopForeground(true);
 	}
 
-	Context itsContext;
+	Context thisContext;
 
-	private String itsStationID;
-	private String itsStationName;
-	private String itsStationURL;
+	private String thisStationID;
+	private String thisStationName;
+	private String thisStationURL;
 
 	public void PlayUrl(String theURL, String theName, String theID) {
-		itsStationID = theID;
-		itsStationName = theName;
-		itsStationURL = theURL;
+		thisStationID = theID;
+		thisStationName = theName;
+		thisStationURL = theURL;
 		new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... stations) {
-				String aStation = itsStationURL;
+				String aStation = thisStationURL;
 
 				Log.v(TAG, "Stream url:" + aStation);
-				SendMessage(itsStationName, "Decoding URL", "Decoding URL");
+				SendMessage(thisStationName, "Decoding URL", "Decoding URL");
 				String aDecodedURL = DecodeURL(aStation);
 
 				Log.v(TAG, "Stream url decoded:" + aDecodedURL);
-				if (itsMediaPlayer == null) {
-					itsMediaPlayer = new MediaPlayer();
-					itsMediaPlayer.setOnBufferingUpdateListener(PlayerService.this);
+				if (thisMediaPlayer == null) {
+					thisMediaPlayer = new MediaPlayer();
+					thisMediaPlayer.setOnBufferingUpdateListener(PlayerService.this);
 				}
-				if (itsMediaPlayer.isPlaying()) {
-					itsMediaPlayer.stop();
-					itsMediaPlayer.reset();
+				if (thisMediaPlayer.isPlaying()) {
+					thisMediaPlayer.stop();
+					thisMediaPlayer.reset();
 				}
 				try {
-					SendMessage(itsStationName, "Preparing stream", "Preparing stream");
-					itsMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-					itsMediaPlayer.setDataSource(aDecodedURL);
-					itsMediaPlayer.prepare();
-					SendMessage(itsStationName, "Playing", "Playing '" + itsStationName + "'");
-					itsMediaPlayer.start();
+					SendMessage(thisStationName, "Preparing stream", "Preparing stream");
+					thisMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+					thisMediaPlayer.setDataSource(aDecodedURL);
+					thisMediaPlayer.prepare();
+					SendMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
+					thisMediaPlayer.start();
 				} catch (IllegalArgumentException e) {
 					Log.e(TAG, "" + e);
-					SendMessage(itsStationName, "Stream url problem", "Stream url problem");
+					SendMessage(thisStationName, "Stream url problem", "Stream url problem");
 					Stop();
 				} catch (IOException e) {
 					Log.e(TAG, "" + e);
-					SendMessage(itsStationName, "Stream caching problem", "Stream caching problem");
+					SendMessage(thisStationName, "Stream caching problem", "Stream caching problem");
 					Stop();
 				} catch (Exception e) {
 					Log.e(TAG, "" + e);
-					SendMessage(itsStationName, "Unable to play stream", "Unable to play stream");
+					SendMessage(thisStationName, "Unable to play stream", "Unable to play stream");
 					Stop();
 				}
 				return null;
@@ -145,12 +145,12 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	}
 
 	public void Stop() {
-		if (itsMediaPlayer != null) {
-			if (itsMediaPlayer.isPlaying()) {
-				itsMediaPlayer.stop();
+		if (thisMediaPlayer != null) {
+			if (thisMediaPlayer.isPlaying()) {
+				thisMediaPlayer.stop();
 			}
-			itsMediaPlayer.release();
-			itsMediaPlayer = null;
+			thisMediaPlayer.release();
+			thisMediaPlayer = null;
 		}
 		stopForeground(true);
 	}
@@ -230,7 +230,13 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	@Override
 	public void onBufferingUpdate(MediaPlayer mp, int percent) {
+		// http://stackoverflow.com/questions/21925454/android-mediaplayer-onbufferingupdatelistener-percentage-of-buffered-content-i
+		// https://code.google.com/p/android/issues/detail?id=65564
 		// Log.v(TAG, "Buffering:" + percent);
-		SendMessage(itsStationName, "Buffering..", "Buffering .. (" + percent + "%)");
+
+		if (percent < 0 || percent > 100) {
+            percent = (int) Math.round((((Math.abs(percent)-1)*100.0/Integer.MAX_VALUE)));
+        }
+		SendMessage(thisStationName, "Buffering..", "Buffering .. (" + percent + "%)");
 	}
 }

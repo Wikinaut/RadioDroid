@@ -20,35 +20,35 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RadioItemBigAdapter extends ArrayAdapter<RadioStation> implements Runnable {
+public class RadioStationsList extends ArrayAdapter<RadioStation> implements Runnable {
 	public class QueueItem {
-		public String itsURL;
-		public ImageView itsImageView;
+		public String thisURL;
+		public ImageView thisImageView;
 
 		public QueueItem(String theURL, ImageView theImageView) {
-			itsURL = theURL;
-			itsImageView = theImageView;
+			thisURL = theURL;
+			thisImageView = theImageView;
 		}
 	}
 
-	HashMap<String, Bitmap> itsIconCache = new HashMap<String, Bitmap>();
-	BlockingQueue<QueueItem> itsQueuedDownloadJobs = new ArrayBlockingQueue<QueueItem>(1000);
-	Thread itsThread;
+	HashMap<String, Bitmap> thisIconCache = new HashMap<String, Bitmap>();
+	BlockingQueue<QueueItem> thisQueuedDownloadJobs = new ArrayBlockingQueue<QueueItem>(1000);
+	Thread thisThread;
 
-	public RadioItemBigAdapter(Context context, int textViewResourceId) {
+	public RadioStationsList(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
-		itsContext = context;
-		itsThread = new Thread(this);
-		itsThread.start();
+		thisContext = context;
+		thisThread = new Thread(this);
+		thisThread.start();
 	}
 
-	Context itsContext;
+	Context thisContext;
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
 		if (v == null) {
-			LayoutInflater vi = (LayoutInflater) itsContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater vi = (LayoutInflater) thisContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = vi.inflate(R.layout.list_item_big, null);
 		}
 		RadioStation aStation = getItem(position);
@@ -64,23 +64,23 @@ public class RadioItemBigAdapter extends ArrayAdapter<RadioStation> implements R
 			ImageView anImageView = (ImageView) v.findViewById(R.id.imageViewIcon);
 
 			// new DownloadImageTask(anImageView).execute(aStation.IconUrl);
-			if (itsIconCache.containsKey(aStation.IconUrl)) {
-				Bitmap aBitmap = itsIconCache.get(aStation.IconUrl);
+			if (thisIconCache.containsKey(aStation.IconUrl)) {
+				Bitmap aBitmap = thisIconCache.get(aStation.IconUrl);
 				if (aBitmap != null)
 					anImageView.setImageBitmap(aBitmap);
 				else
-					anImageView.setImageResource(R.drawable.empty);
+					anImageView.setImageBitmap(null);
 			} else {
 				try {
 					// check download cache
 					String aFileNameIcon = getBase64(aStation.IconUrl);
-					Bitmap anIcon = BitmapFactory.decodeStream(itsContext.openFileInput(aFileNameIcon));
+					Bitmap anIcon = BitmapFactory.decodeStream(thisContext.openFileInput(aFileNameIcon));
 					anImageView.setImageBitmap(anIcon);
-					itsIconCache.put(aStation.IconUrl, anIcon);
+					thisIconCache.put(aStation.IconUrl, anIcon);
 				} catch (Exception e) {
 					try {
-						anImageView.setImageResource(R.drawable.empty);
-						itsQueuedDownloadJobs.put(new QueueItem(aStation.IconUrl, anImageView));
+						anImageView.setImageBitmap(null);
+						thisQueuedDownloadJobs.put(new QueueItem(aStation.IconUrl, anImageView));
 					} catch (InterruptedException e2) {
 						Log.e("Error", "" + e2);
 					}
@@ -94,24 +94,24 @@ public class RadioItemBigAdapter extends ArrayAdapter<RadioStation> implements R
 	public void run() {
 		while (true) {
 			try {
-				final QueueItem anItem = itsQueuedDownloadJobs.take();
+				final QueueItem anItem = thisQueuedDownloadJobs.take();
 				try {
-					if (!itsIconCache.containsKey(anItem.itsURL)) {
-						InputStream in = new java.net.URL(anItem.itsURL).openStream();
+					if (!thisIconCache.containsKey(anItem.thisURL)) {
+						InputStream in = new java.net.URL(anItem.thisURL).openStream();
 						final Bitmap anIcon = BitmapFactory.decodeStream(in);
-						itsIconCache.put(anItem.itsURL, anIcon);
+						thisIconCache.put(anItem.thisURL, anIcon);
 
-						anItem.itsImageView.post(new Runnable() {
+						anItem.thisImageView.post(new Runnable() {
 							public void run() {
 								if (anIcon != null) {
 									// set image in view
-									anItem.itsImageView.setImageBitmap(anIcon);
+									anItem.thisImageView.setImageBitmap(anIcon);
 
 									// save image to file
-									String aFileName = getBase64(anItem.itsURL);
-									Log.v("", "" + anItem.itsURL + "->" + aFileName);
+									String aFileName = getBase64(anItem.thisURL);
+									Log.v("", "" + anItem.thisURL + "->" + aFileName);
 									try {
-										FileOutputStream aStream = itsContext.openFileOutput(aFileName, Context.MODE_PRIVATE);
+										FileOutputStream aStream = thisContext.openFileOutput(aFileName, Context.MODE_PRIVATE);
 										anIcon.compress(Bitmap.CompressFormat.PNG, 100, aStream);
 										aStream.close();
 									} catch (FileNotFoundException e) {
@@ -125,7 +125,7 @@ public class RadioItemBigAdapter extends ArrayAdapter<RadioStation> implements R
 					}
 				} catch (Exception e) {
 					Log.e("Error", "" + e);
-					itsIconCache.put(anItem.itsURL, null);
+					thisIconCache.put(anItem.thisURL, null);
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

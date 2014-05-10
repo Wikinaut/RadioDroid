@@ -18,28 +18,28 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class MainActivity extends ListActivity {
-	private String itsAdressWWWTopClick = "http://www.radio-browser.info/webservice/json/stations/topclick/200";
-	private String itsAdressWWWTopVote = "http://www.radio-browser.info/webservice/json/stations/topvote/200";
+	private String topClickUrl = "http://www.radio-browser.info/webservice/json/stations/topclick/200";
+	private String topVoteUrl = "http://www.radio-browser.info/webservice/json/stations/topvote/200";
 
-	ProgressDialog itsProgressLoading;
-	RadioItemBigAdapter itsArrayAdapter = null;
+	ProgressDialog thisProgressLoading;
+	RadioStationsList thisArrayAdapter = null;
 
 	private static final String TAG = "RadioDroid";
-	IPlayerService itsPlayerService;
+	IPlayerService thisPlayerService;
 	private ServiceConnection svcConn = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			Log.v(TAG, "Service came online");
-			itsPlayerService = IPlayerService.Stub.asInterface(binder);
+			thisPlayerService = IPlayerService.Stub.asInterface(binder);
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
 			Log.v(TAG, "Service offline");
-			itsPlayerService = null;
+			thisPlayerService = null;
 		}
 	};
 
 	private void RefillList(final String theURL) {
-		itsProgressLoading = ProgressDialog.show(MainActivity.this, "", "Loading...");
+		thisProgressLoading = ProgressDialog.show(MainActivity.this, "", "Loading...");
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
@@ -49,12 +49,12 @@ public class MainActivity extends ListActivity {
 			@Override
 			protected void onPostExecute(String result) {
 				if (!isFinishing()) {
-					itsArrayAdapter.clear();
+					thisArrayAdapter.clear();
 					for (RadioStation aStation : Utils.DecodeJson(result)) {
-						itsArrayAdapter.add(aStation);
+						thisArrayAdapter.add(aStation);
 					}
 					getListView().invalidate();
-					itsProgressLoading.dismiss();
+					thisProgressLoading.dismiss();
 				}
 				super.onPostExecute(result);
 			}
@@ -70,10 +70,10 @@ public class MainActivity extends ListActivity {
 		startService(anIntent);
 
 		// gui stuff
-		itsArrayAdapter = new RadioItemBigAdapter(this, R.layout.list_item_big);
-		setListAdapter(itsArrayAdapter);
+		thisArrayAdapter = new RadioStationsList(this, R.layout.list_item_big);
+		setListAdapter(thisArrayAdapter);
 
-		RefillList(itsAdressWWWTopClick);
+		RefillList(topClickUrl);
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -89,13 +89,13 @@ public class MainActivity extends ListActivity {
 	}
 
 	void ClickOnItem(RadioStation theStation) {
-		Intent anIntent = new Intent(getBaseContext(), RadioDroidStationDetail.class);
+		Intent anIntent = new Intent(getBaseContext(), RadioStationDetailActivity.class);
 		anIntent.putExtra("stationid", theStation.ID);
 		startActivity(anIntent);
 
-		// if (itsPlayerService != null) {
+		// if (thisPlayerService != null) {
 		// try {
-		// itsPlayerService.Play(aStation.StreamUrl, aStation.Name, aStation.ID);
+		// thisPlayerService.Play(aStation.StreamUrl, aStation.Name, aStation.ID);
 		// } catch (RemoteException e) {
 		// // TODO Auto-generated catch block
 		// Log.e(TAG, "" + e);
@@ -127,7 +127,7 @@ public class MainActivity extends ListActivity {
 		if (item.getItemId() == MENU_STOP) {
 			Log.v(TAG, "menu : stop");
 			try {
-				itsPlayerService.Stop();
+				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);
@@ -137,13 +137,13 @@ public class MainActivity extends ListActivity {
 		// check selected menu item
 		if (item.getItemId() == MENU_TOPVOTE) {
 			Log.v(TAG, "menu : topvote");
-			RefillList(itsAdressWWWTopVote);
+			RefillList(topVoteUrl);
 			setTitle("TopVote");
 			return true;
 		}
 		if (item.getItemId() == MENU_TOPCLICK) {
 			Log.v(TAG, "menu : topclick");
-			RefillList(itsAdressWWWTopClick);
+			RefillList(topClickUrl);
 			setTitle("TopClick");
 			return true;
 		}

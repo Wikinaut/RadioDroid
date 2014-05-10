@@ -6,14 +6,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/detail_station_name"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:text="@string/detail_name"
-        android:textSize="0dip" />
-
-    <TextView
-        android:id="@+id/detail_station_name_value"
+        android:id="@+id/stationdetail_name_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#FF0000FF"
@@ -27,14 +20,14 @@
         android:background="#dcdcdc" />
 
     <TextView
-        android:id="@+id/detail_station_tags"
+        android:id="@+id/stationdetail_tags"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/detail_tags"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/detail_station_tags_value"
+        android:id="@+id/stationdetail_tags_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp" />
@@ -45,14 +38,14 @@
         android:background="#dcdcdc" />
 
     <TextView
-        android:id="@+id/detail_station_country"
+        android:id="@+id/stationdetail_country"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/detail_country"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/detail_station_country_value"
+        android:id="@+id/stationdetail_country_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp" />
@@ -63,14 +56,14 @@
         android:background="#dcdcdc" />
 
     <TextView
-        android:id="@+id/detail_station_language"
+        android:id="@+id/stationdetail_language"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/detail_language"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/detail_station_language_value"
+        android:id="@+id/stationdetail_language_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp" />
@@ -81,7 +74,7 @@
         android:background="#dcdcdc" />
 
     <LinearLayout
-        android:id="@+id/detail_station_www_clickable"
+        android:id="@+id/stationdetail_homepage_url_clickable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/list_selector_background"
@@ -89,14 +82,14 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/detail_station_www"
+            android:id="@+id/stationdetail_homepage_url"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/detail_weblink"
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/detail_station_www_value"
+            android:id="@+id/stationdetail_homepage_url_value"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp" />
