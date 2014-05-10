@@ -6,20 +6,6 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/stationdetail_name_value"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#FF0000FF"
-        android:textColor="#FFFFFFFF"
-        android:textStyle="bold"
-        android:textSize="20sp" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="2dip"
-        android:background="#dcdcdc" />
-    
-    <TextView
         android:id="@+id/stationdetail_id"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

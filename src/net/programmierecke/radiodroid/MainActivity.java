@@ -22,7 +22,7 @@ public class MainActivity extends ListActivity {
 	private String topVoteUrl = "http://www.radio-browser.info/webservice/json/stations/topvote/200";
 
 	ProgressDialog thisProgressLoading;
-	RadioStationsList thisArrayAdapter = null;
+	RadioStationList thisArrayAdapter = null;
 
 	private static final String TAG = "RadioDroid";
 	IPlayerService thisPlayerService;
@@ -38,7 +38,7 @@ public class MainActivity extends ListActivity {
 		}
 	};
 
-	private void RefillList(final String theURL) {
+	private void createStationList(final String theURL) {
 		thisProgressLoading = ProgressDialog.show(MainActivity.this, "", "Loading...");
 		new AsyncTask<Void, Void, String>() {
 			@Override
@@ -70,10 +70,10 @@ public class MainActivity extends ListActivity {
 		startService(anIntent);
 
 		// gui stuff
-		thisArrayAdapter = new RadioStationsList(this, R.layout.list_item_big);
+		thisArrayAdapter = new RadioStationList(this, R.layout.station_list);
 		setListAdapter(thisArrayAdapter);
 
-		RefillList(topClickUrl);
+		createStationList(topClickUrl);
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -137,13 +137,13 @@ public class MainActivity extends ListActivity {
 		// check selected menu item
 		if (item.getItemId() == MENU_TOPVOTE) {
 			Log.v(TAG, "menu : topvote");
-			RefillList(topVoteUrl);
+			createStationList(topVoteUrl);
 			setTitle("TopVote");
 			return true;
 		}
 		if (item.getItemId() == MENU_TOPCLICK) {
 			Log.v(TAG, "menu : topclick");
-			RefillList(topClickUrl);
+			createStationList(topClickUrl);
 			setTitle("TopClick");
 			return true;
 		}

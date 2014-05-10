@@ -55,7 +55,7 @@ public class RadioStationDetailActivity extends Activity {
 						if (aStationList.length == 1) {
 							Log.v("", "onPostExecute4");
 							thisStation = aStationList[0];
-							setStation(thisStation);
+							createStationDetailView(thisStation);
 							Play();
 						}
 					}
@@ -67,12 +67,11 @@ public class RadioStationDetailActivity extends Activity {
 		}.execute();
 	}
 
-	private void setStation(RadioStation radioStation) {
+	private void createStationDetailView(RadioStation radioStation) {
 		thisStation = radioStation;
 
-		TextView aTextViewName = (TextView) findViewById(R.id.stationdetail_name_value);
-		aTextViewName.setText(radioStation.Name);
-
+		setTitle(radioStation.Name);
+		
 		TextView aTextViewId = (TextView) findViewById(R.id.stationdetail_id_value);
 		aTextViewId.setText(radioStation.ID);
 

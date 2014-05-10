@@ -20,7 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RadioStationsList extends ArrayAdapter<RadioStation> implements Runnable {
+public class RadioStationList extends ArrayAdapter<RadioStation> implements Runnable {
 	public class QueueItem {
 		public String thisURL;
 		public ImageView thisImageView;
@@ -35,7 +35,7 @@ public class RadioStationsList extends ArrayAdapter<RadioStation> implements Run
 	BlockingQueue<QueueItem> thisQueuedDownloadJobs = new ArrayBlockingQueue<QueueItem>(1000);
 	Thread thisThread;
 
-	public RadioStationsList(Context context, int textViewResourceId) {
+	public RadioStationList(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
 		thisContext = context;
 		thisThread = new Thread(this);
@@ -49,7 +49,7 @@ public class RadioStationsList extends ArrayAdapter<RadioStation> implements Run
 		View v = convertView;
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) thisContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.list_item_big, null);
+			v = vi.inflate(R.layout.station_list, null);
 		}
 		RadioStation aStation = getItem(position);
 		if (aStation != null) {
