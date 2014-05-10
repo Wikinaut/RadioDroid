@@ -2,6 +2,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="app_name">RadioDroid</string>
     <string name="detail_tags">Tags</string>
+    <string name="detail_id">internal station id</string>
     <string name="detail_country">Country</string>
     <string name="detail_language">Language</string>
     <string name="detail_weblink">Homepage</string>

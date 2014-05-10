@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 public class Utils {
@@ -29,18 +30,25 @@ public class Utils {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject anObject = jsonArray.getJSONObject(i);
 
-				RadioStation aStation = new RadioStation();
-				aStation.ID = anObject.getString("id");
-				aStation.Name = anObject.getString("name");
-				aStation.StreamUrl = anObject.getString("url");
-				aStation.Votes = anObject.getInt("votes");
-				aStation.HomePageUrl = anObject.getString("homepage");
-				aStation.TagsAll = anObject.getString("tags");
-				aStation.Country = anObject.getString("country");
-				aStation.IconUrl = anObject.getString("favicon");
-				aStation.Language = anObject.getString("language");
+				String streamUrl = anObject.getString("url");
 
-				aList.add(aStation);
+				if ( !TextUtils.isEmpty(streamUrl) ) {
+
+					RadioStation aStation = new RadioStation();
+
+					aStation.StreamUrl = streamUrl;
+					aStation.ID = anObject.getString("id");
+					aStation.Name = anObject.getString("name");
+					aStation.Votes = anObject.getInt("votes");
+					aStation.HomePageUrl = anObject.getString("homepage");
+					aStation.TagsAll = anObject.getString("tags");
+					aStation.Country = anObject.getString("country");
+					aStation.IconUrl = anObject.getString("favicon");
+					aStation.Language = anObject.getString("language");
+				
+					aList.add(aStation);
+				}
+	
 			}
 
 		} catch (JSONException e) {

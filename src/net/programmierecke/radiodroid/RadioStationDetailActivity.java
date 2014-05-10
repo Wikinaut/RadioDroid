@@ -73,6 +73,9 @@ public class RadioStationDetailActivity extends Activity {
 		TextView aTextViewName = (TextView) findViewById(R.id.stationdetail_name_value);
 		aTextViewName.setText(radioStation.Name);
 
+		TextView aTextViewId = (TextView) findViewById(R.id.stationdetail_id_value);
+		aTextViewId.setText(radioStation.ID);
+
 		TextView aTextViewCountry = (TextView) findViewById(R.id.stationdetail_country_value);
 		aTextViewCountry.setText(radioStation.Country);
 

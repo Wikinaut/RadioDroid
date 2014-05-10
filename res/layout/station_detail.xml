@@ -18,6 +18,24 @@
         android:layout_width="fill_parent"
         android:layout_height="2dip"
         android:background="#dcdcdc" />
+    
+    <TextView
+        android:id="@+id/stationdetail_id"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_id"
+        android:textSize="12sp" />
+    
+    <TextView
+        android:id="@+id/stationdetail_id_value"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp" />
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:background="#dcdcdc" />
 
     <TextView
         android:id="@+id/stationdetail_tags"
@@ -25,13 +43,13 @@
         android:layout_height="wrap_content"
         android:text="@string/detail_tags"
         android:textSize="12sp" />
-
+    
     <TextView
         android:id="@+id/stationdetail_tags_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp" />
-
+    
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="2dip"
