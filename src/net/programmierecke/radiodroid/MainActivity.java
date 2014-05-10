@@ -20,6 +20,7 @@ import android.widget.ListView;
 public class MainActivity extends ListActivity {
 	private String topClickUrl = "http://www.radio-browser.info/webservice/json/stations/topclick/200";
 	private String topVoteUrl = "http://www.radio-browser.info/webservice/json/stations/topvote/200";
+	private String allStationsUrl = "http://www.radio-browser.info/webservice/json/stations/";
 
 	ProgressDialog thisProgressLoading;
 	RadioStationList thisArrayAdapter = null;
@@ -108,12 +109,14 @@ public class MainActivity extends ListActivity {
 	final int MENU_STOP = 0;
 	final int MENU_TOPVOTE = 1;
 	final int MENU_TOPCLICK = 2;
+	final int MENU_ALLSTATIONS = 3;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(Menu.NONE, MENU_STOP, Menu.NONE, "Stop");
 		menu.add(Menu.NONE, MENU_TOPVOTE, Menu.NONE, "TopVote");
 		menu.add(Menu.NONE, MENU_TOPCLICK, Menu.NONE, "TopClick");
+		menu.add(Menu.NONE, MENU_ALLSTATIONS, Menu.NONE, "AllStations");
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		// getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -145,6 +148,12 @@ public class MainActivity extends ListActivity {
 			Log.v(TAG, "menu : topclick");
 			createStationList(topClickUrl);
 			setTitle("TopClick");
+			return true;
+		}
+		if (item.getItemId() == MENU_ALLSTATIONS) {
+			Log.v(TAG, "menu : allstations");
+			createStationList(allStationsUrl);
+			setTitle("AllStations");
 			return true;
 		}
 		return false;
