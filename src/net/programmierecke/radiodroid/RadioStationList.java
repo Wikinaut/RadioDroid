@@ -11,7 +11,6 @@ import java.util.concurrent.BlockingQueue;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +58,7 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 				aTextViewTop.setText("" + aStation.Name);
 			}
 			if (aTextViewBottom != null) {
-				aTextViewBottom.setText("" + aStation.getShortDetails());
+				aTextViewBottom.setText("" + aStation.stationDetailsShortString());
 			}
 			ImageView anImageView = (ImageView) v.findViewById(R.id.imageViewIcon);
 
@@ -73,7 +72,7 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 			} else {
 				try {
 					// check download cache
-					String aFileNameIcon = getBase64(aStation.IconUrl);
+					String aFileNameIcon = Utils.getBase64(aStation.IconUrl);
 					Bitmap anIcon = BitmapFactory.decodeStream(thisContext.openFileInput(aFileNameIcon));
 					anImageView.setImageBitmap(anIcon);
 					thisIconCache.put(aStation.IconUrl, anIcon);
@@ -108,7 +107,7 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 									anItem.thisImageView.setImageBitmap(anIcon);
 
 									// save image to file
-									String aFileName = getBase64(anItem.thisURL);
+									String aFileName = Utils.getBase64(anItem.thisURL);
 									Log.v("", "" + anItem.thisURL + "->" + aFileName);
 									try {
 										FileOutputStream aStream = thisContext.openFileOutput(aFileName, Context.MODE_PRIVATE);
@@ -134,7 +133,4 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 		}
 	}
 
-	public String getBase64(String theOriginal) {
-		return Base64.encodeToString(theOriginal.getBytes(), Base64.URL_SAFE | Base64.NO_PADDING);
-	}
 }

@@ -19,6 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.text.TextUtils;
+import android.text.Html;
+import android.util.Base64;
 import android.util.Log;
 
 public class Utils {
@@ -28,23 +30,43 @@ public class Utils {
 			JSONArray jsonArray = new JSONArray(result);
 
 			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject anObject = jsonArray.getJSONObject(i);
+				JSONObject o = jsonArray.getJSONObject(i);
 
-				String streamUrl = anObject.getString("url");
-
+				String streamUrl = o.getString("url");
+				
 				if ( !TextUtils.isEmpty(streamUrl) ) {
 
 					RadioStation aStation = new RadioStation();
 
-					aStation.StreamUrl = streamUrl;
-					aStation.ID = anObject.getString("id");
-					aStation.Name = anObject.getString("name");
-					aStation.Votes = anObject.getInt("votes");
-					aStation.HomePageUrl = anObject.getString("homepage");
-					aStation.TagsAll = anObject.getString("tags");
-					aStation.Country = anObject.getString("country");
-					aStation.IconUrl = anObject.getString("favicon");
-					aStation.Language = anObject.getString("language");
+					aStation.StreamUrl = html(streamUrl);
+					
+					String country = html(o.getString("country"));
+					country = country.replace("United States of America", "USA");
+					
+					String subCountry = html(o.getString("subcountry"));
+
+					if ( !country.isEmpty() && !subCountry.isEmpty() ) {
+						
+						country = country + "/" + subCountry;
+						
+					} else {
+						
+						if ( country.isEmpty() && !subCountry.isEmpty() ) {
+							country = subCountry;
+						}
+					
+					}
+					aStation.Country = country;
+					aStation.SubCountry = subCountry;
+					
+					aStation.ID = html(o.getString("id"));
+					aStation.Name = html(o.getString("name"));
+					aStation.Votes = o.getInt("votes");
+					aStation.NegativeVotes = o.getInt("negativevotes");
+					aStation.HomePageUrl = html(o.getString("homepage"));
+					aStation.TagsAll = html(o.getString("tags"));
+					aStation.IconUrl = html(o.getString("favicon"));
+					aStation.Language = html(o.getString("language"));
 				
 					aList.add(aStation);
 				}
@@ -82,5 +104,13 @@ public class Utils {
 			Log.e("", "" + e);
 		}
 		return builder.toString();
+	}
+	
+	public static String getBase64(String theOriginal) {
+		return Base64.encodeToString(theOriginal.getBytes(), Base64.URL_SAFE | Base64.NO_PADDING);
+	}
+	
+	public static String html(String str) {
+		return Html.fromHtml(str).toString().trim();
 	}
 }

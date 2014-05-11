@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.programmierecke.radiodroid"
     android:versionCode="4"
-    android:versionName="0.4-develop" >
+    android:versionName="0.4.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
