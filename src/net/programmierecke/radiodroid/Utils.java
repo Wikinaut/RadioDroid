@@ -26,6 +26,8 @@ import android.util.Log;
 public class Utils {
 	public static RadioStation[] DecodeJson(String result) {
 		List<RadioStation> aList = new ArrayList<RadioStation>();
+		List<String> aTags = new ArrayList<String>();
+
 		try {
 			JSONArray jsonArray = new JSONArray(result);
 
@@ -64,7 +66,18 @@ public class Utils {
 					aStation.Votes = o.getInt("votes");
 					aStation.NegativeVotes = o.getInt("negativevotes");
 					aStation.HomePageUrl = html(o.getString("homepage"));
-					aStation.TagsAll = html(o.getString("tags"));
+
+					String tags = html(o.getString("tags"));
+					if ( !tags.isEmpty() ) {
+						aTags.clear();
+						for (String part : tags.split(",")) {
+							if (part.trim() != "") {
+								aTags.add(part.trim());
+							}
+						}
+						aStation.TagsAll = TextUtils.join(", ", aTags);
+					}					
+
 					aStation.IconUrl = html(o.getString("favicon"));
 					aStation.Language = html(o.getString("language"));
 				

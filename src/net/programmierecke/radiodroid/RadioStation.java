@@ -16,7 +16,6 @@ public class RadioStation {
 	public String SubCountry="";
 	public String TagsAll="";
 	public String Language="";
-	public int ClickCount=0;
 	public int Votes=0;
 	public int NegativeVotes=0;
 
@@ -35,11 +34,7 @@ public class RadioStation {
 		}
 	
 		if ( !TagsAll.isEmpty() ) {
-			for (String aPart : TagsAll.split(",")) {
-				if (aPart.trim() != "") {
-					aList.add(aPart.trim());
-				}
-			}
+			aList.add(TagsAll);
 		}
 		
 		return TextUtils.join(", ", aList);

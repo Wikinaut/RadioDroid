@@ -73,7 +73,9 @@ public class RadioStationDetailActivity extends Activity {
 		setTitle(radioStation.Name);
 		
 		TextView aTextViewId = (TextView) findViewById(R.id.stationdetail_id_value);
-		aTextViewId.setText(radioStation.ID);
+		String positiveVotes = (radioStation.Votes > 0) ? "+" + radioStation.Votes : "0";
+		String negativeVotes = (radioStation.NegativeVotes > 0) ? "-" + radioStation.NegativeVotes : "0";
+		aTextViewId.setText( radioStation.ID + " (" + positiveVotes + "/" + negativeVotes + ")" );
 
 		TextView aTextViewCountry = (TextView) findViewById(R.id.stationdetail_country_value);
 		aTextViewCountry.setText(radioStation.Country);
