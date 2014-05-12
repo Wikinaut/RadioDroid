@@ -21,17 +21,17 @@ import android.widget.TextView;
 
 public class RadioStationList extends ArrayAdapter<RadioStation> implements Runnable {
 	public class QueueItem {
-		public String thisURL;
-		public ImageView thisImageView;
+		public String url;
+		public ImageView imageView;
 
 		public QueueItem(String theURL, ImageView theImageView) {
-			thisURL = theURL;
-			thisImageView = theImageView;
+			url = theURL;
+			imageView = theImageView;
 		}
 	}
 
-	HashMap<String, Bitmap> thisIconCache = new HashMap<String, Bitmap>();
-	BlockingQueue<QueueItem> thisQueuedDownloadJobs = new ArrayBlockingQueue<QueueItem>(1000);
+	HashMap<String, Bitmap> iconCache = new HashMap<String, Bitmap>();
+	BlockingQueue<QueueItem> queuedDownloadJobs = new ArrayBlockingQueue<QueueItem>(1000);
 	Thread thisThread;
 
 	public RadioStationList(Context context, int textViewResourceId) {
@@ -45,92 +45,143 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		
 		View v = convertView;
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) thisContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = vi.inflate(R.layout.station_list, null);
 		}
+		
 		RadioStation aStation = getItem(position);
+		
 		if (aStation != null) {
-			TextView aTextViewTop = (TextView) v.findViewById(R.id.textViewTop);
-			TextView aTextViewBottom = (TextView) v.findViewById(R.id.textViewBottom);
-			if (aTextViewTop != null) {
-				aTextViewTop.setText("" + aStation.Name);
+			
+			TextView aTextViewTopLine = (TextView) v.findViewById(R.id.textViewTop);
+			TextView aTextViewBottomLine = (TextView) v.findViewById(R.id.textViewBottom);
+			
+			if (aTextViewTopLine != null) {
+				aTextViewTopLine.setText("" + aStation.Name);
 			}
-			if (aTextViewBottom != null) {
-				aTextViewBottom.setText("" + aStation.stationDetailsShortString());
+			
+			if (aTextViewBottomLine != null) {
+				aTextViewBottomLine.setText("" + aStation.stationDetailsShortString());
 			}
+			
 			ImageView anImageView = (ImageView) v.findViewById(R.id.imageViewIcon);
 
 			// new DownloadImageTask(anImageView).execute(aStation.IconUrl);
-			if (thisIconCache.containsKey(aStation.IconUrl)) {
-				Bitmap aBitmap = thisIconCache.get(aStation.IconUrl);
-				if (aBitmap != null)
+			if ( iconCache.containsKey(aStation.IconUrl) ) {
+
+				Bitmap aBitmap = iconCache.get(aStation.IconUrl);
+				
+				if (aBitmap != null) {
+					
 					anImageView.setImageBitmap(aBitmap);
-				else
+					
+				} else {
+					
 					anImageView.setImageBitmap(null);
+					
+				}
+				
 			} else {
+				
 				try {
+					
 					// check download cache
 					String aFileNameIcon = Utils.getBase64(aStation.IconUrl);
 					Bitmap anIcon = BitmapFactory.decodeStream(thisContext.openFileInput(aFileNameIcon));
 					anImageView.setImageBitmap(anIcon);
-					thisIconCache.put(aStation.IconUrl, anIcon);
+					iconCache.put(aStation.IconUrl, anIcon);
+					
 				} catch (Exception e) {
+					
 					try {
+						
 						anImageView.setImageBitmap(null);
-						thisQueuedDownloadJobs.put(new QueueItem(aStation.IconUrl, anImageView));
+						queuedDownloadJobs.put(new QueueItem(aStation.IconUrl, anImageView));
+						
 					} catch (InterruptedException e2) {
+						
 						Log.e("Error", "" + e2);
+						
 					}
 				}
-			}
+			} 
+			
 		}
+
 		return v;
 	}
 
 	@Override
 	public void run() {
+		
 		while (true) {
+			
 			try {
-				final QueueItem anItem = thisQueuedDownloadJobs.take();
+				
+				final QueueItem queuedItem = queuedDownloadJobs.take();
+				
 				try {
-					if (!thisIconCache.containsKey(anItem.thisURL)) {
-						InputStream in = new java.net.URL(anItem.thisURL).openStream();
+					
+					if ( !iconCache.containsKey(queuedItem.url) ) {
+						
+						InputStream in = new java.net.URL(queuedItem.url).openStream();
 						final Bitmap anIcon = BitmapFactory.decodeStream(in);
-						thisIconCache.put(anItem.thisURL, anIcon);
+						iconCache.put(queuedItem.url, anIcon);
 
-						anItem.thisImageView.post(new Runnable() {
+						queuedItem.imageView.post(new Runnable() {
+							
 							public void run() {
+								
 								if (anIcon != null) {
+									
 									// set image in view
-									anItem.thisImageView.setImageBitmap(anIcon);
+									queuedItem.imageView.setImageBitmap(anIcon);
 
 									// save image to file
-									String aFileName = Utils.getBase64(anItem.thisURL);
-									Log.v("", "" + anItem.thisURL + "->" + aFileName);
+									String aFileName = Utils.getBase64(queuedItem.url);
+									Log.v("", "" + queuedItem.url + "->" + aFileName);
+									
 									try {
+										
 										FileOutputStream aStream = thisContext.openFileOutput(aFileName, Context.MODE_PRIVATE);
 										anIcon.compress(Bitmap.CompressFormat.PNG, 100, aStream);
 										aStream.close();
+										
 									} catch (FileNotFoundException e) {
+										
 										Log.e("", "" + e);
+										
 									} catch (IOException e) {
+										
 										Log.e("", "" + e);
+										
 									}
+									
 								}
+								
 							}
+							
 						});
 					}
 				} catch (Exception e) {
+					
 					Log.e("Error", "" + e);
-					thisIconCache.put(anItem.thisURL, null);
+					iconCache.put(queuedItem.url, null);
+					
 				}
+				
 			} catch (Exception e) {
+				
 				// TODO Auto-generated catch block
 				Log.e("Error", "" + e);
+				
 			}
+			
 		}
+		
 	}
 
 }
