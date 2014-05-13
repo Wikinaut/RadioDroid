@@ -125,13 +125,21 @@
     <Button
         android:id="@+id/detail_button_play"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
+		android:background="@color/lime"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="30sp"
         android:text="@string/detail_play" />
 
     <Button
         android:id="@+id/detail_button_stop"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
+		android:background="@color/red"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="30sp"
         android:text="@string/detail_stop" />
 
 </LinearLayout>

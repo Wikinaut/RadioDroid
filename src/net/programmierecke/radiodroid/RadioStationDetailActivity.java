@@ -121,6 +121,10 @@ public class RadioStationDetailActivity extends Activity {
 	private void Play() {
 		if (thisPlayerService != null) {
 			try {
+				Button aButtonPlay = (Button) findViewById(R.id.detail_button_play);
+				aButtonPlay.setVisibility(View.GONE);
+				Button aButtonStop = (Button) findViewById(R.id.detail_button_stop);
+				aButtonStop.setVisibility(View.VISIBLE);
 				thisPlayerService.Play(thisStation.StreamUrl, thisStation.Name, thisStation.ID);
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
@@ -131,6 +135,10 @@ public class RadioStationDetailActivity extends Activity {
 	private void Stop() {
 		if (thisPlayerService != null) {
 			try {
+				Button aButtonPlay = (Button) findViewById(R.id.detail_button_play);
+				aButtonPlay.setVisibility(View.VISIBLE);
+				Button aButtonStop = (Button) findViewById(R.id.detail_button_stop);
+				aButtonStop.setVisibility(View.GONE);
 				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
