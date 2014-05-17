@@ -29,12 +29,10 @@ public class MainActivity extends ListActivity {
 	IPlayerService thisPlayerService;
 	private ServiceConnection svcConn = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
-			Log.v(TAG, "Service came online");
 			thisPlayerService = IPlayerService.Stub.asInterface(binder);
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			Log.v(TAG, "Service offline");
 			thisPlayerService = null;
 		}
 	};
@@ -139,19 +137,16 @@ public class MainActivity extends ListActivity {
 		}
 		// check selected menu item
 		if (item.getItemId() == MENU_TOPVOTE) {
-			Log.v(TAG, "menu : topvote");
 			createStationList(topVoteUrl);
 			setTitle("TopVote");
 			return true;
 		}
 		if (item.getItemId() == MENU_TOPCLICK) {
-			Log.v(TAG, "menu : topclick");
 			createStationList(topClickUrl);
 			setTitle("TopClick");
 			return true;
 		}
 		if (item.getItemId() == MENU_ALLSTATIONS) {
-			Log.v(TAG, "menu : allstations");
 			createStationList(allStationsUrl);
 			setTitle("AllStations");
 			return true;

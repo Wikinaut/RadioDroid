@@ -38,7 +38,12 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	private final IPlayerService.Stub thisBinder = new IPlayerService.Stub() {
 
 		public void Play(String theUrl, String theName, String theID) throws RemoteException {
-			PlayerService.this.PlayUrl(theUrl, theName, theID);
+			RadioDroid thisApp = (RadioDroid) getApplication();
+			if ( !thisApp.isEqualLastStationUrl( theUrl ) ) {
+				PlayerService.this.Stop();
+				PlayerService.this.PlayUrl(theUrl, theName, theID);
+			}
+			thisApp.setLastStationUrl( theUrl );
 		}
 
 		public void Stop() throws RemoteException {
@@ -88,34 +93,37 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	private String thisStationID;
 	private String thisStationName;
-	private String thisStationURL;
+	private String thisStationUrl;
 
-	public void PlayUrl(String theURL, String theName, String theID) {
+	public void PlayUrl(String theUrl, String theName, String theID) {
 		thisStationID = theID;
 		thisStationName = theName;
-		thisStationURL = theURL;
+		thisStationUrl = theUrl;
+
 		new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... stations) {
-				String aStation = thisStationURL;
+				String aStation = thisStationUrl;
 
-				Log.v(TAG, "Stream url:" + aStation);
-				SendMessage(thisStationName, "Decoding URL", "Decoding URL");
-				String aDecodedURL = DecodeURL(aStation);
-
-				Log.v(TAG, "Stream url decoded:" + aDecodedURL);
 				if (thisMediaPlayer == null) {
 					thisMediaPlayer = new MediaPlayer();
 					thisMediaPlayer.setOnBufferingUpdateListener(PlayerService.this);
 				}
-				if (thisMediaPlayer.isPlaying()) {
+
+				String decodedUrl = decodeUrl(aStation);
+
+				RadioDroid thisApp = (RadioDroid) getApplication();
+				
+				if ( thisMediaPlayer.isPlaying()
+					&& !thisApp.isEqualLastStationUrl(thisStationUrl) ) {
 					thisMediaPlayer.stop();
 					thisMediaPlayer.reset();
 				}
+
 				try {
 					SendMessage(thisStationName, "Preparing stream", "Preparing stream");
 					thisMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-					thisMediaPlayer.setDataSource(aDecodedURL);
+					thisMediaPlayer.setDataSource(decodedUrl);
 					thisMediaPlayer.prepare();
 					SendMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
 					thisMediaPlayer.start();
@@ -145,6 +153,8 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	}
 
 	public void Stop() {
+		RadioDroid thisApp = (RadioDroid) getApplication();
+		thisApp.setLastStationUrl( "" );
 		if (thisMediaPlayer != null) {
 			if (thisMediaPlayer.isPlaying()) {
 				thisMediaPlayer.stop();
@@ -159,10 +169,13 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(theURI);
+
 		try {
+
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
 			int statusCode = statusLine.getStatusCode();
+
 			if (statusCode == 200) {
 				HttpEntity entity = response.getEntity();
 				InputStream content = entity.getContent();
@@ -175,21 +188,21 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 			} else {
 				Log.e(TAG, "Failed to download file");
 			}
+			
 		} catch (ClientProtocolException e) {
 			Log.e(TAG, "" + e);
 		} catch (IOException e) {
 			Log.e(TAG, "" + e);
 		}
+
 		return builder.toString();
+
 	}
 
-	String DecodeURL(String theUrl) {
+	String decodeUrl(String theUrl) {
 		try {
 			URL anUrl = new URL(theUrl);
 			String aFileName = anUrl.getFile();
-
-			Log.v("", "Decoded filename:" + aFileName);
-			Log.v("", "Decoded query:" + anUrl.getQuery());
 
 			int aQueryIndex = aFileName.indexOf('?');
 			if (aQueryIndex >= 0) {
@@ -202,7 +215,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				BufferedReader aReader = new BufferedReader(new StringReader(theFile));
 				String str;
 				while ((str = aReader.readLine()) != null) {
-					Log.v(TAG, " -> " + str);
 					if (str.substring(0, 4).equals("File")) {
 						int anIndex = str.indexOf('=');
 						if (anIndex >= 0) {
@@ -216,7 +228,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				BufferedReader aReader = new BufferedReader(new StringReader(theFile));
 				String str;
 				while ((str = aReader.readLine()) != null) {
-					Log.v(TAG, " -> " + str);
 					if (!str.substring(0, 1).equals("#")) {
 						return str.trim();
 					}
@@ -237,6 +248,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		if (percent < 0 || percent > 100) {
             percent = (int) Math.round((((Math.abs(percent)-1)*100.0/Integer.MAX_VALUE)));
         }
-		SendMessage(thisStationName, "Buffering..", "Buffering .. (" + percent + "%)");
+		SendMessage(thisStationName, "Buffering ..", "Buffering .. (" + percent + "%)");
 	}
 }

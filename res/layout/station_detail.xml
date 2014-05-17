@@ -124,22 +124,24 @@
     
     <Button
         android:id="@+id/detail_button_play"
+        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-		android:background="@color/lime"
+		android:background="@color/limeGreen"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:textSize="30sp"
+        android:textSize="36sp"
         android:text="@string/detail_play" />
 
     <Button
         android:id="@+id/detail_button_stop"
+		android:visibility="visible"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
 		android:background="@color/red"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:textSize="30sp"
+        android:textSize="36sp"
         android:text="@string/detail_stop" />
 
 </LinearLayout>

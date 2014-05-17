@@ -24,13 +24,11 @@ public class RadioStationDetailActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.v("", "Oncreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.station_detail);
 
 		Bundle anExtras = getIntent().getExtras();
 		final String aStationID = anExtras.getString("stationid");
-		Log.v("", "Oncreate2:" + aStationID);
 
 		Intent anIntent = new Intent(this, PlayerService.class);
 		bindService(anIntent, svcConn, BIND_AUTO_CREATE);
@@ -40,20 +38,15 @@ public class RadioStationDetailActivity extends Activity {
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
-				Log.v("", "doInBackground");
 				return Utils.downloadFeed(String.format(Locale.US, "http://www.radio-browser.info/webservice/json/stations/byid/%s", aStationID));
 			}
 
 			@Override
 			protected void onPostExecute(String result) {
-				Log.v("", "onPostExecute:" + result);
 				if (!isFinishing()) {
-					Log.v("", "onPostExecute2");
 					if (result != null) {
 						RadioStation[] aStationList = Utils.DecodeJson(result);
-						Log.v("", "onPostExecute3:" + aStationList.length);
 						if (aStationList.length == 1) {
-							Log.v("", "onPostExecute4");
 							thisStation = aStationList[0];
 							createStationDetailView(thisStation);
 							Play();

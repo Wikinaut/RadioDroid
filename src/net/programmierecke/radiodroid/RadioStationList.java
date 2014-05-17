@@ -142,7 +142,6 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 
 									// save image to file
 									String aFileName = Utils.getBase64(queuedItem.url);
-									Log.v("", "" + queuedItem.url + "->" + aFileName);
 									
 									try {
 										
