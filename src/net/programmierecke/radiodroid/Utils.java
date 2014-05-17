@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.text.Html;
 import android.util.Base64;
@@ -162,6 +164,15 @@ public class Utils {
 	
 	public static String getAppAndVersionName(Context context) {
 		return context.getString(R.string.app_name)+" "+getVersionName(context);
+	}
+
+	public static boolean hasWifiConnection(Context context) {
+		
+		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+		return mWifi.isConnected();
+
 	}
 	
 }

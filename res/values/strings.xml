@@ -9,4 +9,5 @@
     <string name="detail_stream_url_title">Stream</string>
     <string name="detail_play">Play</string>
     <string name="detail_stop">Stop</string>
+    <string name="no_wifi_connection">No WiFi (WLAN) connection.&lt;br>%1$s cannot be started.&lt;br>Please activate your WiFi (WLAN) connection.</string>
 </resources>

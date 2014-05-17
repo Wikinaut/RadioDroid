@@ -6,10 +6,14 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.Context;
+import android.content.res.Resources;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
 	private String topClickUrl = "http://www.radio-browser.info/webservice/json/stations/topclick/200";
@@ -74,6 +79,18 @@ public class MainActivity extends ListActivity {
 		setListAdapter(thisArrayAdapter);
 
 		Context context = MainActivity.this.getApplicationContext();
+
+		Resources res = getResources();
+		String appName = res.getString(R.string.app_name);
+		String text = String.format(res.getString(R.string.no_wifi_connection),	appName);
+
+		if (!Utils.hasWifiConnection(context)) {
+			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+			toneG.startTone(ToneGenerator.TONE_SUP_RADIO_NOTAVAIL, 2000);
+			Toast.makeText( context, Html.fromHtml( text ), Toast.LENGTH_LONG ).show();
+			finish();
+		}
+		
 		setTitle(Utils.getAppAndVersionName(context));
 		
 		createStationList(topClickUrl);

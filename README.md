@@ -31,20 +31,22 @@ If you wish to install and run the **original app** as published on https://gith
 
 Status: 20140517
 
-* add a search function
-* check WiFi/WLAN connection
-* add user option "WiFi/WLAN only"
-* add a "low bitrate" flag, or "bitrate" field to the station data
-* add user option "Low bitrate streams only"
-* auto extend lists if scrolling to the end
-* allow to sort the selected lists alphabetically
-* add lists for tags, countries
-* make "Tags" clickable, list all stations with "Tag"
-* add station detail activity and scroll function
-* report broken stream urls or station definition errors
-* concatenate country and language information in one field
-* add a "About application" page
-* add "Favorites" function (add to "Favorites", list "Favorites")
-* local cache of all station data
-* add "History" function (list my last recently selected stations on top of the others)
-* add asx playlist file decoding support
+- [ ] add a search function
+- [x] check WiFi/WLAN connection, show a warning, beep and close if WiFi is unavailable on start
+- [ ] add user option "WiFi/WLAN only"
+- [x] add "Exit program" to the options menu
+- [ ] add a "low bitrate" flag, or "bitrate" field to the station data
+- [ ] add user option "Low bitrate streams only"
+- [ ] auto extend lists if scrolling to the end
+- [ ] allow to sort the selected lists alphabetically
+- [ ] add lists for tags, countries
+- [ ] make "Tags" clickable, list all stations with "Tag"
+- [ ] add station detail activity and scroll function
+- [ ] report broken stream urls or station definition errors
+- [ ] concatenate country and language information in one field
+- [x] add program version info
+- [ ] add an "About application" page (links to the source code, feedback, donations etc.)
+- [ ] add "Favorites" function (add to "Favorites", list "Favorites")
+- [ ] local cache of all station data
+- [ ] add "History" function (list my last recently selected stations on top of the others)
+- [ ] add asx playlist file decoding support
