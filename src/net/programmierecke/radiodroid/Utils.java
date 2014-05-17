@@ -22,6 +22,8 @@ import android.text.TextUtils;
 import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
+import android.content.Context;
+import android.content.pm.PackageManager;
 
 public class Utils {
 	public static RadioStation[] DecodeJson(String result) {
@@ -143,4 +145,23 @@ public class Utils {
 	public static String html(String str) {
 		return Html.fromHtml(str).toString().trim();
 	}
+
+	public static String getVersionName(Context context) {
+	    String versionName;
+		
+	    try {
+	      versionName = context.getPackageManager()
+	                      .getPackageInfo(context.getPackageName(), 0)
+	                      .versionName;
+	    } catch (PackageManager.NameNotFoundException e) {
+	      throw new AssertionError(e);
+	    }
+	    return versionName;
+	  }
+	
+	
+	public static String getAppAndVersionName(Context context) {
+		return context.getString(R.string.app_name)+" "+getVersionName(context);
+	}
+	
 }

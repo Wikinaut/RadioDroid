@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -72,6 +73,9 @@ public class MainActivity extends ListActivity {
 		thisArrayAdapter = new RadioStationList(this, R.layout.station_list);
 		setListAdapter(thisArrayAdapter);
 
+		Context context = MainActivity.this.getApplicationContext();
+		setTitle(Utils.getAppAndVersionName(context));
+		
 		createStationList(topClickUrl);
 
 		ListView lv = getListView();
@@ -104,13 +108,16 @@ public class MainActivity extends ListActivity {
 		// }
 	}
 
-	final int MENU_STOP = 0;
-	final int MENU_TOPVOTE = 1;
-	final int MENU_TOPCLICK = 2;
-	final int MENU_ALLSTATIONS = 3;
+	final int MENU_EXIT = 0;
+	final int MENU_STOP = 1;
+	final int MENU_TOPVOTE = 2;
+	final int MENU_TOPCLICK = 3;
+	final int MENU_ALLSTATIONS = 4;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		Context context = MainActivity.this.getApplicationContext();
+		menu.add(Menu.NONE, MENU_EXIT, Menu.NONE, "Exit " + Utils.getAppAndVersionName(context));
 		menu.add(Menu.NONE, MENU_STOP, Menu.NONE, "Stop");
 		menu.add(Menu.NONE, MENU_TOPVOTE, Menu.NONE, "TopVote");
 		menu.add(Menu.NONE, MENU_TOPCLICK, Menu.NONE, "TopClick");
@@ -125,6 +132,19 @@ public class MainActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.v(TAG, "menu click");
 
+		// check selected menu item
+
+		if (item.getItemId() == MENU_EXIT) {
+			Log.v(TAG, "menu : exit");
+			try {
+				thisPlayerService.Stop();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, "" + e);
+			}
+			finish();
+		}
+
 		if (item.getItemId() == MENU_STOP) {
 			Log.v(TAG, "menu : stop");
 			try {
@@ -135,22 +155,25 @@ public class MainActivity extends ListActivity {
 			}
 			return true;
 		}
-		// check selected menu item
+
 		if (item.getItemId() == MENU_TOPVOTE) {
 			createStationList(topVoteUrl);
 			setTitle("TopVote");
 			return true;
 		}
+
 		if (item.getItemId() == MENU_TOPCLICK) {
 			createStationList(topClickUrl);
 			setTitle("TopClick");
 			return true;
 		}
+
 		if (item.getItemId() == MENU_ALLSTATIONS) {
 			createStationList(allStationsUrl);
 			setTitle("AllStations");
 			return true;
 		}
+
 		return false;
 	}
 }

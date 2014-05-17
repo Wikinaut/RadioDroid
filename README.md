@@ -29,7 +29,7 @@ If you wish to install and run the **original app** as published on https://gith
 
 #### TODO
 
-Status: 20140512
+Status: 20140517
 
 * add a search function
 * check WiFi/WLAN connection
@@ -46,5 +46,5 @@ Status: 20140512
 * add a "About application" page
 * add "Favorites" function (add to "Favorites", list "Favorites")
 * local cache of all station data
-* add "History" function (list my own *n* recently selected stations on top of the others)
+* add "History" function (list my last recently selected stations on top of the others)
 * add asx playlist file decoding support

@@ -4,7 +4,17 @@ import android.app.Application;
 
 public class RadioDroid extends Application {
 	private RadioStation lastStation;
-		
+
+	public RadioDroid() {
+		lastStation = new RadioStation();
+	}
+
+    public void onCreate(){
+        super.onCreate();
+        lastStation = new RadioStation();
+        lastStation.StreamUrl = "";
+    }
+    
 	public void setLastStationUrl(String stationUrl) {
 		if (lastStation == null) {
 			lastStation = new RadioStation();
