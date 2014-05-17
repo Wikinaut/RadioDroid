@@ -125,6 +125,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 					thisMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					thisMediaPlayer.setDataSource(decodedUrl);
 					thisMediaPlayer.prepare();
+					Log.d(TAG, "Start playing "+thisStationUrl);
 					SendMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
 					thisMediaPlayer.start();
 				} catch (IllegalArgumentException e) {
