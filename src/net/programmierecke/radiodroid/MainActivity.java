@@ -78,21 +78,22 @@ public class MainActivity extends ListActivity {
 		thisArrayAdapter = new RadioStationList(this, R.layout.station_list);
 		setListAdapter(thisArrayAdapter);
 
-		Context context = MainActivity.this.getApplicationContext();
-
-		Resources res = getResources();
-		String appName = res.getString(R.string.app_name);
-		String text = String.format(res.getString(R.string.no_wifi_connection),	appName);
-
+		Context context = getApplicationContext();
+		
 		if (!Utils.hasWifiConnection(context)) {
 			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 			toneG.startTone(ToneGenerator.TONE_SUP_RADIO_NOTAVAIL, 2000);
-			Toast.makeText( context, Html.fromHtml( text ), Toast.LENGTH_LONG ).show();
+			Toast.makeText(
+					context,
+					Html.fromHtml( String.format(
+							getString(R.string.no_wifi_connection),
+							Utils.getAppName(context))
+					),
+					Toast.LENGTH_LONG ).show();
 			finish();
 		}
 		
-		setTitle(Utils.getAppAndVersionName(context));
-		
+		setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
 		createStationList(topClickUrl);
 
 		ListView lv = getListView();
@@ -130,15 +131,22 @@ public class MainActivity extends ListActivity {
 	final int MENU_TOPVOTE = 2;
 	final int MENU_TOPCLICK = 3;
 	final int MENU_ALLSTATIONS = 4;
+	final int MENU_SEARCHSTATIONS = 5;
+	final int MENU_ABOUTAPPLICATION = 9;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		Context context = MainActivity.this.getApplicationContext();
-		menu.add(Menu.NONE, MENU_EXIT, Menu.NONE, "Exit " + Utils.getAppAndVersionName(context));
-		menu.add(Menu.NONE, MENU_STOP, Menu.NONE, "Stop");
-		menu.add(Menu.NONE, MENU_TOPVOTE, Menu.NONE, "TopVote");
-		menu.add(Menu.NONE, MENU_TOPCLICK, Menu.NONE, "TopClick");
-		menu.add(Menu.NONE, MENU_ALLSTATIONS, Menu.NONE, "AllStations");
+
+		menu.add(Menu.NONE, MENU_EXIT, Menu.NONE, String.format(
+			getString( R.string.exit_app ),
+			Utils.getAppName(getApplicationContext()) )
+		);
+		menu.add(Menu.NONE, MENU_STOP, Menu.NONE, getString( R.string.stop_playing ) );
+		menu.add(Menu.NONE, MENU_TOPVOTE, Menu.NONE, getString( R.string.top_votes ) );
+		menu.add(Menu.NONE, MENU_TOPCLICK, Menu.NONE, getString( R.string.top_clicks ) );
+		menu.add(Menu.NONE, MENU_ALLSTATIONS, Menu.NONE, getString( R.string.all_stations ) );
+		menu.add(Menu.NONE, MENU_SEARCHSTATIONS, Menu.NONE, getString( R.string.search_stations) );
+		menu.add(Menu.NONE, MENU_ABOUTAPPLICATION, Menu.NONE, getString( R.string.about_application ) );
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		// getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -148,7 +156,8 @@ public class MainActivity extends ListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.v(TAG, "menu click");
-
+		Context context = getApplicationContext();
+		
 		// check selected menu item
 
 		if (item.getItemId() == MENU_EXIT) {
@@ -175,22 +184,33 @@ public class MainActivity extends ListActivity {
 
 		if (item.getItemId() == MENU_TOPVOTE) {
 			createStationList(topVoteUrl);
-			setTitle("TopVote");
+			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_votes) + ")" );
 			return true;
 		}
 
 		if (item.getItemId() == MENU_TOPCLICK) {
 			createStationList(topClickUrl);
-			setTitle("TopClick");
+			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
 			return true;
 		}
 
 		if (item.getItemId() == MENU_ALLSTATIONS) {
 			createStationList(allStationsUrl);
-			setTitle("AllStations");
+			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.all_stations) + ")" );
+			return true;
+		}
+
+		if (item.getItemId() == MENU_SEARCHSTATIONS) {
+			startActivity(new Intent( context, AutoCompleteActivity.class));
+			return true;
+		}
+
+		if (item.getItemId() == MENU_ABOUTAPPLICATION) {
+			startActivity(new Intent( context, AboutApplicationActivity.class));
 			return true;
 		}
 
 		return false;
 	}
+
 }

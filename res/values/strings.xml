@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="app_name">RadioDroid</string>
+    
     <string name="detail_tags">Tags</string>
     <string name="detail_id">internal station id (pos./neg. votes)</string>
     <string name="detail_country">Country</string>
@@ -9,5 +10,41 @@
     <string name="detail_stream_url_title">Stream</string>
     <string name="detail_play">Play</string>
     <string name="detail_stop">Stop</string>
+    
+    <!-- Option menu items -->
+    <string name="exit_app">exit %1$s</string>
+    <string name="stop_playing">stop playing</string>
+    <string name="top_votes">top votes</string>
+    <string name="top_clicks">top clicks</string>
+    <string name="all_stations">all stations</string>
+    <string name="search_stations">search station</string>
+    <string name="about_application">about</string>
+        
     <string name="no_wifi_connection">No WiFi (WLAN) connection.&lt;br>%1$s cannot be started.&lt;br>Please activate your WiFi (WLAN) connection.</string>
+    <string name="auto_complete_stations">Search stations</string>
+    
+    <string-array name="stationList">
+   		<item >Black</item>
+        <item >White</item>
+        <item >Red</item>
+        <item >Blue</item>
+        <item >Blue White</item>
+        <item >Blue Yellow</item>
+        <item >Blue Red</item>
+        <item >Blue Green</item>
+        <item >Blue Pink</item>
+        <item >Yellow</item>
+        <item >Green</item>
+        <item >Brown</item>
+        <item >Pink</item>
+        <item >Orange</item>
+        <item >Purple</item>
+    </string-array>
+    
+    <!-- About application activity items -->
+    <string name="about__title_version">Version</string>
+    <string name="about__title_changelog">List of changes</string>
+    <string name="about__title_source_code">Source code</string>
+    <string name="about__title_license">License</string>
+    
 </resources>

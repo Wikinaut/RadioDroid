@@ -148,6 +148,10 @@ public class Utils {
 		return Html.fromHtml(str).toString().trim();
 	}
 
+	public static String getAppName(Context context) {
+		return context.getString(R.string.app_name);
+	}
+
 	public static String getVersionName(Context context) {
 	    String versionName;
 		
@@ -161,9 +165,8 @@ public class Utils {
 	    return versionName;
 	  }
 	
-	
 	public static String getAppAndVersionName(Context context) {
-		return context.getString(R.string.app_name)+" "+getVersionName(context);
+		return context.getString(R.string.app_name) + " " + getVersionName(context);
 	}
 
 	public static boolean hasWifiConnection(Context context) {

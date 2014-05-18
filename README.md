@@ -45,7 +45,7 @@ Status: 20140517
 - [ ] report broken stream urls or station definition errors
 - [ ] concatenate country and language information in one field
 - [x] add program version info
-- [ ] add an "About application" page (links to the source code, feedback, donations etc.)
+- [x] add an "About application" page (links to the source code, feedback, donations etc.)
 - [ ] add "Favorites" function (add to "Favorites", list "Favorites")
 - [ ] local cache of all station data
 - [ ] add "History" function (list my last recently selected stations on top of the others)
