@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    
+	<PreferenceCategory android:key="pref_key_about_application" android:title="@string/preferences__about">
+	    	    
+	    <net.programmierecke.radiodroid.preferences.AboutApplicationPreference
+    	    android:key="pref_key_exit_application" />
+	    <net.programmierecke.radiodroid.preferences.AboutApplicationPreference
+    	    android:key="pref_key_stop_playing" />
+	   	<net.programmierecke.radiodroid.preferences.TopVotesPreference
+    	    android:key="pref_key_top_votes" />
+    	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
+    	    android:key="pref_key_top_clicks" />
+    	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
+    	    android:key="pref_key_all_stations" />
+    	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
+    	    android:key="pref_key_search_stations" />
+    	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
+    	    android:key="pref_key_about_application_version"
+        	android:title="@string/preferences__version" />
+    	
+    </PreferenceCategory>
+    
+</PreferenceScreen>

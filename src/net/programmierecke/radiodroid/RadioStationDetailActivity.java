@@ -2,6 +2,8 @@ package net.programmierecke.radiodroid;
 
 import java.util.Locale;
 
+import com.google.gson.Gson;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -62,7 +64,7 @@ public class RadioStationDetailActivity extends Activity {
 
 	private void createStationDetailView(RadioStation radioStation) {
 		thisStation = radioStation;
-
+		
 		setTitle(radioStation.Name);
 		
 		TextView aTextViewId = (TextView) findViewById(R.id.stationdetail_id_value);
@@ -118,7 +120,8 @@ public class RadioStationDetailActivity extends Activity {
 				aButtonPlay.setVisibility(View.GONE);
 				Button aButtonStop = (Button) findViewById(R.id.detail_button_stop);
 				aButtonStop.setVisibility(View.VISIBLE);
-				thisPlayerService.Play(thisStation.StreamUrl, thisStation.Name, thisStation.ID);
+			    Gson gson = new Gson();
+				thisPlayerService.Play(thisStation.StreamUrl, thisStation.Name, thisStation.ID, gson.toJson(thisStation) );
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
 			}
@@ -151,4 +154,5 @@ public class RadioStationDetailActivity extends Activity {
 			thisPlayerService = null;
 		}
 	};
+
 }

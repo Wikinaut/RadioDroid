@@ -1,12 +1,13 @@
 package net.programmierecke.radiodroid;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.AsyncTask;
@@ -23,10 +24,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import net.programmierecke.radiodroid.Constants;
+
 public class MainActivity extends ListActivity {
-	private String topClickUrl = "http://www.radio-browser.info/webservice/json/stations/topclick/200";
-	private String topVoteUrl = "http://www.radio-browser.info/webservice/json/stations/topvote/200";
-	private String allStationsUrl = "http://www.radio-browser.info/webservice/json/stations/";
 
 	ProgressDialog thisProgressLoading;
 	RadioStationList thisArrayAdapter = null;
@@ -93,8 +93,16 @@ public class MainActivity extends ListActivity {
 			finish();
 		}
 		
+		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
+	    String spLastStation = sp.getString("last_station_url",null);
+	    if ( spLastStation != null) {
+			// Toast.makeText(this, "Last played stream was: " + spLastStation, Toast.LENGTH_LONG).show();
+			RadioDroid thisApp = (RadioDroid) getApplication();
+			ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
+	    }
+	    
 		setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
-		createStationList(topClickUrl);
+		createStationList(Constants.TOP_CLICKS_URL);
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -128,8 +136,8 @@ public class MainActivity extends ListActivity {
 
 	final int MENU_EXIT = 0;
 	final int MENU_STOP = 1;
-	final int MENU_TOPVOTE = 2;
-	final int MENU_TOPCLICK = 3;
+	final int MENU_TOPVOTES = 2;
+	final int MENU_TOPCLICKS = 3;
 	final int MENU_ALLSTATIONS = 4;
 	final int MENU_SEARCHSTATIONS = 5;
 	final int MENU_ABOUTAPPLICATION = 9;
@@ -142,8 +150,8 @@ public class MainActivity extends ListActivity {
 			Utils.getAppName(getApplicationContext()) )
 		);
 		menu.add(Menu.NONE, MENU_STOP, Menu.NONE, getString( R.string.stop_playing ) );
-		menu.add(Menu.NONE, MENU_TOPVOTE, Menu.NONE, getString( R.string.top_votes ) );
-		menu.add(Menu.NONE, MENU_TOPCLICK, Menu.NONE, getString( R.string.top_clicks ) );
+		menu.add(Menu.NONE, MENU_TOPVOTES, Menu.NONE, getString( R.string.top_votes ) );
+		menu.add(Menu.NONE, MENU_TOPCLICKS, Menu.NONE, getString( R.string.top_clicks ) );
 		menu.add(Menu.NONE, MENU_ALLSTATIONS, Menu.NONE, getString( R.string.all_stations ) );
 		menu.add(Menu.NONE, MENU_SEARCHSTATIONS, Menu.NONE, getString( R.string.search_stations) );
 		menu.add(Menu.NONE, MENU_ABOUTAPPLICATION, Menu.NONE, getString( R.string.about_application ) );
@@ -182,20 +190,20 @@ public class MainActivity extends ListActivity {
 			return true;
 		}
 
-		if (item.getItemId() == MENU_TOPVOTE) {
-			createStationList(topVoteUrl);
+		if (item.getItemId() == MENU_TOPVOTES) {
+			createStationList(Constants.TOP_VOTES_URL);
 			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_votes) + ")" );
 			return true;
 		}
 
-		if (item.getItemId() == MENU_TOPCLICK) {
-			createStationList(topClickUrl);
+		if (item.getItemId() == MENU_TOPCLICKS) {
+			createStationList(Constants.TOP_CLICKS_URL);
 			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
 			return true;
 		}
 
 		if (item.getItemId() == MENU_ALLSTATIONS) {
-			createStationList(allStationsUrl);
+			createStationList(Constants.ALL_STATIONS_URL);
 			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.all_stations) + ")" );
 			return true;
 		}
@@ -206,7 +214,9 @@ public class MainActivity extends ListActivity {
 		}
 
 		if (item.getItemId() == MENU_ABOUTAPPLICATION) {
-			startActivity(new Intent( context, AboutApplicationActivity.class));
+			// startActivity(new Intent( context, AboutApplicationActivity.class));
+			startActivity(new Intent( context, ApplicationPreferencesActivity.class));
+
 			return true;
 		}
 

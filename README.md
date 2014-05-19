@@ -29,7 +29,7 @@ If you wish to install and run the **original app** as published on https://gith
 
 #### TODO
 
-Status: 20140517
+Status: 20140519
 
 - [ ] add a search function
 - [x] check WiFi/WLAN connection, show a warning, beep and close if WiFi is unavailable on start
@@ -39,9 +39,10 @@ Status: 20140517
 - [ ] add user option "Low bitrate streams only"
 - [ ] auto extend lists if scrolling to the end
 - [ ] allow to sort the selected lists alphabetically
-- [ ] add lists for tags, countries
 - [ ] make "Tags" clickable, list all stations with "Tag"
+- [ ] add lists for tags, countries
 - [ ] add station detail activity and scroll function
+- [ ] use preferences activity instead menu options
 - [ ] report broken stream urls or station definition errors
 - [ ] concatenate country and language information in one field
 - [x] add program version info
@@ -49,4 +50,5 @@ Status: 20140517
 - [ ] add "Favorites" function (add to "Favorites", list "Favorites")
 - [ ] local cache of all station data
 - [ ] add "History" function (list my last recently selected stations on top of the others)
+- [x] when restarting RadioDroid play the last played station
 - [ ] add asx playlist file decoding support

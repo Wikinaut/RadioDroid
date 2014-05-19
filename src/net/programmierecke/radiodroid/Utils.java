@@ -177,5 +177,5 @@ public class Utils {
 		return mWifi.isConnected();
 
 	}
-	
+
 }

@@ -37,13 +37,16 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	private final IPlayerService.Stub thisBinder = new IPlayerService.Stub() {
 
-		public void Play(String theUrl, String theName, String theID) throws RemoteException {
+		public void Play(String theUrl, String theName, String theID, String theJsonRadioStation) throws RemoteException {
 			RadioDroid thisApp = (RadioDroid) getApplication();
-			if ( !thisApp.isEqualLastStationUrl( theUrl ) ) {
+
+			if ( !thisApp.isPlayingSameLastStationUrl( theUrl ) ) {
 				PlayerService.this.Stop();
 				PlayerService.this.PlayUrl(theUrl, theName, theID);
 			}
 			thisApp.setLastStationUrl( theUrl );
+			thisApp.setLastStationStatus( "play" );
+			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
 		}
 
 		public void Stop() throws RemoteException {
@@ -94,6 +97,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	private String thisStationID;
 	private String thisStationName;
 	private String thisStationUrl;
+	private RadioStation thisStation;
 
 	public void PlayUrl(String theUrl, String theName, String theID) {
 		thisStationID = theID;
@@ -115,7 +119,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				RadioDroid thisApp = (RadioDroid) getApplication();
 				
 				if ( thisMediaPlayer.isPlaying()
-					&& !thisApp.isEqualLastStationUrl(thisStationUrl) ) {
+					&& !thisApp.isPlayingSameLastStationUrl(thisStationUrl) ) {
 					thisMediaPlayer.stop();
 					thisMediaPlayer.reset();
 				}
@@ -155,7 +159,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	public void Stop() {
 		RadioDroid thisApp = (RadioDroid) getApplication();
-		thisApp.setLastStationUrl( "" );
+		thisApp.setLastStationStatus( "stop" );
 		if (thisMediaPlayer != null) {
 			if (thisMediaPlayer.isPlaying()) {
 				thisMediaPlayer.stop();

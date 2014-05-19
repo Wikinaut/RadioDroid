@@ -1,9 +1,9 @@
 package net.programmierecke.radiodroid;
 
-import android.preference.PreferenceActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.view.MenuItem;

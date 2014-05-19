@@ -8,8 +8,8 @@
     <string name="detail_language">Language</string>
     <string name="detail_weblink">Homepage</string>
     <string name="detail_stream_url_title">Stream</string>
-    <string name="detail_play">Play</string>
-    <string name="detail_stop">Stop</string>
+    <string name="detail_play">click to play</string>
+    <string name="detail_stop">click to stop</string>
     
     <!-- Option menu items -->
     <string name="exit_app">exit %1$s</string>
@@ -46,5 +46,11 @@
     <string name="about__title_changelog">List of changes</string>
     <string name="about__title_source_code">Source code</string>
     <string name="about__title_license">License</string>
+    
+    <!--  Application preferences activity -->
+    
+    <string name="preferences__about">About</string>
+    <string name="preferences__version">Version</string>
+    
     
 </resources>
