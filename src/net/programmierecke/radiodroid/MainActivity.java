@@ -33,6 +33,7 @@ public class MainActivity extends ListActivity {
 
 	private static final String TAG = "RadioDroid";
 	IPlayerService thisPlayerService;
+
 	private ServiceConnection svcConn = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			thisPlayerService = IPlayerService.Stub.asInterface(binder);
@@ -121,17 +122,6 @@ public class MainActivity extends ListActivity {
 		Intent anIntent = new Intent(getBaseContext(), RadioStationDetailActivity.class);
 		anIntent.putExtra("stationid", theStation.ID);
 		startActivity(anIntent);
-
-		// if (thisPlayerService != null) {
-		// try {
-		// thisPlayerService.Play(aStation.StreamUrl, aStation.Name, aStation.ID);
-		// } catch (RemoteException e) {
-		// // TODO Auto-generated catch block
-		// Log.e(TAG, "" + e);
-		// }
-		// } else {
-		// Log.v(TAG, "SERVICE NOT ONLINE");
-		// }
 	}
 
 	final int MENU_EXIT = 0;
@@ -214,9 +204,7 @@ public class MainActivity extends ListActivity {
 		}
 
 		if (item.getItemId() == MENU_ABOUTAPPLICATION) {
-			// startActivity(new Intent( context, AboutApplicationActivity.class));
 			startActivity(new Intent( context, ApplicationPreferencesActivity.class));
-
 			return true;
 		}
 

@@ -2,20 +2,23 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     
-	<PreferenceCategory android:key="pref_key_about_application" android:title="@string/preferences__about">
-	    	    
-	    <net.programmierecke.radiodroid.preferences.AboutApplicationPreference
-    	    android:key="pref_key_exit_application" />
-	    <net.programmierecke.radiodroid.preferences.AboutApplicationPreference
-    	    android:key="pref_key_stop_playing" />
-	   	<net.programmierecke.radiodroid.preferences.TopVotesPreference
-    	    android:key="pref_key_top_votes" />
-    	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
-    	    android:key="pref_key_top_clicks" />
-    	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
-    	    android:key="pref_key_all_stations" />
-    	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
-    	    android:key="pref_key_search_stations" />
+	<PreferenceCategory android:key="pref_key_about_application" android:title="@string/preferences__about_application">
+
+        <Preference android:key="pref_key_stop_playing"
+                    android:title="@string/preferences__stop_playing"/>
+        
+    	<Preference android:key="pref_key_top_votes"
+                    android:title="@string/preferences__top_votes"/>
+    	
+	  	<Preference android:key="pref_key_top_clicks"
+                    android:title="@string/preferences__top_clicks"/>
+	  	
+        <Preference android:key="pref_key_all_stations"
+                    android:title="@string/preferences__all_stations"/>
+        
+	    <Preference android:key="pref_key_search_stations"
+                    android:title="@string/preferences__search_stations"/>
+                        	    	    	    
     	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
     	    android:key="pref_key_about_application_version"
         	android:title="@string/preferences__version" />

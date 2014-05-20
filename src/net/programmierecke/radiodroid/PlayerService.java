@@ -97,7 +97,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	private String thisStationID;
 	private String thisStationName;
 	private String thisStationUrl;
-	private RadioStation thisStation;
 
 	public void PlayUrl(String theUrl, String theName, String theID) {
 		thisStationID = theID;

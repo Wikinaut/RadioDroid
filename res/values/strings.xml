@@ -48,9 +48,14 @@
     <string name="about__title_license">License</string>
     
     <!--  Application preferences activity -->
-    
-    <string name="preferences__about">About</string>
+    <string name="preferences__about_application">About</string>
+    <string name="preferences__exit_application">exit application</string>
+    <string name="preferences__stop_playing">stop playing</string>
+    <string name="preferences__top_votes">top votes</string>
+    <string name="preferences__top_clicks">top clicks</string>
+    <string name="preferences__all_stations">all stations</string>
+    <string name="preferences__search_stations">search stations</string>
     <string name="preferences__version">Version</string>
-    
+                
     
 </resources>
