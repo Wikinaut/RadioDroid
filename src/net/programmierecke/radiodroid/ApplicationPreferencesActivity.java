@@ -41,7 +41,6 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 		}
 	};
 
-	private static final String EXIT_APPLICATION = "pref_key_exit_application";
 	private static final String STOP_PLAYING = "pref_key_stop_playing";
 	private static final String TOP_VOTES = "pref_key_top_votes";
 	private static final String TOP_CLICKS = "pref_key_top_clicks";
@@ -209,17 +208,6 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 		startActivity(anIntent);
 	}
 
-  }
-
-
-  private class ExitListener implements Preference.OnPreferenceClickListener {
-	    @Override
-	    public boolean onPreferenceClick(Preference preference) {
-
-	    	finish();
-	    	return true;
-
-	    }
   }
 
   private class AboutApplicationListener implements Preference.OnPreferenceClickListener {

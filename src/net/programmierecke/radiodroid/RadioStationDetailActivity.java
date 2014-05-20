@@ -121,7 +121,7 @@ public class RadioStationDetailActivity extends Activity {
 				Button aButtonStop = (Button) findViewById(R.id.detail_button_stop);
 				aButtonStop.setVisibility(View.VISIBLE);
 			    Gson gson = new Gson();
-				thisPlayerService.Play(thisStation.StreamUrl, thisStation.Name, thisStation.ID, gson.toJson(thisStation) );
+				thisPlayerService.Play( /* thisStation.StreamUrl, thisStation.Name, thisStation.ID, */ gson.toJson(thisStation) );
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
 			}

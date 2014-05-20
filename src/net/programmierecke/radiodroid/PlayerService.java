@@ -15,6 +15,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.google.gson.Gson;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -37,14 +39,17 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	private final IPlayerService.Stub thisBinder = new IPlayerService.Stub() {
 
-		public void Play(String theUrl, String theName, String theID, String theJsonRadioStation) throws RemoteException {
+		public void Play( /* String theUrl, String theName, String theID, */ String theJsonRadioStation) throws RemoteException {
 			RadioDroid thisApp = (RadioDroid) getApplication();
-
-			if ( !thisApp.isPlayingSameLastStationUrl( theUrl ) ) {
+	
+			Gson gson = new Gson();
+			RadioStation thisStation = gson.fromJson( theJsonRadioStation, RadioStation.class );
+			
+			if ( !thisApp.isPlayingSameLastStationUrl( thisStation.StreamUrl ) ) {
 				PlayerService.this.Stop();
-				PlayerService.this.PlayUrl(theUrl, theName, theID);
+				PlayerService.this.PlayUrl( thisStation );
 			}
-			thisApp.setLastStationUrl( theUrl );
+			thisApp.setLastStationUrl( thisStation.StreamUrl );
 			thisApp.setLastStationStatus( "play" );
 			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
 		}
@@ -96,29 +101,26 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	private String thisStationID;
 	private String thisStationName;
-	private String thisStationUrl;
 
-	public void PlayUrl(String theUrl, String theName, String theID) {
-		thisStationID = theID;
-		thisStationName = theName;
-		thisStationUrl = theUrl;
-
+	public void PlayUrl( RadioStation thisStation ) {
+		final String thisStationName = thisStation.Name;
+		final String thisStationStreamUrl = thisStation.StreamUrl;
+		
 		new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... stations) {
-				String aStation = thisStationUrl;
 
 				if (thisMediaPlayer == null) {
 					thisMediaPlayer = new MediaPlayer();
 					thisMediaPlayer.setOnBufferingUpdateListener(PlayerService.this);
 				}
 
-				String decodedUrl = decodeUrl(aStation);
+				String decodedUrl = decodeUrl(thisStationStreamUrl);
 
 				RadioDroid thisApp = (RadioDroid) getApplication();
 				
 				if ( thisMediaPlayer.isPlaying()
-					&& !thisApp.isPlayingSameLastStationUrl(thisStationUrl) ) {
+					&& !thisApp.isPlayingSameLastStationUrl(thisStationStreamUrl) ) {
 					thisMediaPlayer.stop();
 					thisMediaPlayer.reset();
 				}
@@ -128,7 +130,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 					thisMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					thisMediaPlayer.setDataSource(decodedUrl);
 					thisMediaPlayer.prepare();
-					Log.d(TAG, "Start playing "+thisStationUrl);
+					Log.d(TAG, "Start playing "+thisStationStreamUrl);
 					SendMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
 					thisMediaPlayer.start();
 				} catch (IllegalArgumentException e) {
