@@ -33,23 +33,31 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class PlayerService extends Service implements OnBufferingUpdateListener {
+
 	protected static final int NOTIFY_ID = 1;
 	final String TAG = "PlayerService";
+	private String thisStationID;
+	private String thisStationName;
+	private RadioStation playingStation;
+
 	MediaPlayer thisMediaPlayer = null;
+	Context thisContext;
 
 	private final IPlayerService.Stub thisBinder = new IPlayerService.Stub() {
 
-		public void Play( /* String theUrl, String theName, String theID, */ String theJsonRadioStation) throws RemoteException {
+		public void Play( String theJsonRadioStation) throws RemoteException {
 			RadioDroid thisApp = (RadioDroid) getApplication();
 	
 			Gson gson = new Gson();
-			RadioStation thisStation = gson.fromJson( theJsonRadioStation, RadioStation.class );
+			playingStation = gson.fromJson( theJsonRadioStation, RadioStation.class );
+			// thisStationName = thisStation.Name;
+			// thisStationID = thisStation.ID;
 			
-			if ( !thisApp.isPlayingSameLastStationUrl( thisStation.StreamUrl ) ) {
+			if ( !thisApp.isPlayingSameLastStationUrl( playingStation.StreamUrl ) ) {
 				PlayerService.this.Stop();
-				PlayerService.this.PlayUrl( thisStation );
+				PlayerService.this.PlayUrl( playingStation );
 			}
-			thisApp.setLastStationUrl( thisStation.StreamUrl );
+			thisApp.setLastStationUrl( playingStation.StreamUrl );
 			thisApp.setLastStationStatus( "play" );
 			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
 		}
@@ -64,7 +72,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				return null;
 			if (!thisMediaPlayer.isPlaying())
 				return null;
-			return thisStationID;
+			return playingStation.ID;
 		}
 	};
 
@@ -80,13 +88,24 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	}
 
 	public void SendMessage(String theTitle, String theMessage, String theTicker) {
+		
 		Intent notificationIntent = new Intent(thisContext, RadioStationDetailActivity.class);
-		notificationIntent.putExtra("stationid", thisStationID);
+		notificationIntent.putExtra("stationid", playingStation.ID);
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent contentIntent = PendingIntent.getActivity(thisContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-		Notification thisNotification = new NotificationCompat.Builder(thisContext).setContentIntent(contentIntent).setContentTitle(theTitle)
-				.setContentText(theMessage).setWhen(System.currentTimeMillis()).setTicker(theTicker).setOngoing(true).setUsesChronometer(true)
-				.setSmallIcon(R.drawable.play).setLargeIcon((((BitmapDrawable) getResources().getDrawable(R.drawable.ic_launcher)).getBitmap())).build();
+
+		Notification thisNotification = new NotificationCompat
+				.Builder(thisContext).setContentIntent(contentIntent).setContentTitle(theTitle)
+				.setContentText(theMessage)
+				.setWhen(System.currentTimeMillis())
+				.setTicker(theTicker)
+				.setOngoing(true)
+				.setUsesChronometer(true)
+				.setSmallIcon(R.drawable.play)
+				.setLargeIcon( (
+							(BitmapDrawable) getResources().getDrawable(R.drawable.ic_launcher)
+						).getBitmap()
+				).build();
 
 		startForeground(NOTIFY_ID, thisNotification);
 	}
@@ -96,11 +115,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		Stop();
 		stopForeground(true);
 	}
-
-	Context thisContext;
-
-	private String thisStationID;
-	private String thisStationName;
 
 	public void PlayUrl( RadioStation thisStation ) {
 		final String thisStationName = thisStation.Name;
@@ -254,6 +268,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		if (percent < 0 || percent > 100) {
             percent = (int) Math.round((((Math.abs(percent)-1)*100.0/Integer.MAX_VALUE)));
         }
-		SendMessage(thisStationName, "Buffering ..", "Buffering .. (" + percent + "%)");
+		SendMessage(playingStation.Name, "Buffering ..", "Buffering .. (" + percent + "%)");
 	}
 }
