@@ -12,6 +12,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -19,8 +20,11 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.Html;
 import android.util.Log;
+import android.widget.Toast;
 
 public class PlayerService extends Service implements OnBufferingUpdateListener {
 
@@ -42,7 +46,25 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 			if ( !thisApp.isPlayingSameLastStationUrl( playingStation.StreamUrl ) ) {
 				PlayerService.this.Stop();
 				PlayerService.this.PlayUrl( playingStation );
+
+				if	( !thisApp.isSameLastStationUrl( playingStation.StreamUrl ) ) {
+					Context context = getApplicationContext();
+					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+					if ( settings.getBoolean( "pref_toggle_notify_server_about_play_click", true ) ) {
+						String response = Utils.getFromUrl( "http://www.radio-browser.info/?action=clicked&id=" + playingStation.ID );
+						Toast.makeText(
+								context,
+								Html.fromHtml( String.format(
+										getString(R.string.notify_server_about_play_click),
+										playingStation.ID + response )
+								),
+								Toast.LENGTH_LONG ).show();
+					}
+				}
+
 			}
+	
 			thisApp.setLastStationUrl( playingStation.StreamUrl );
 			thisApp.setLastStationStatus( "play" );
 			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );

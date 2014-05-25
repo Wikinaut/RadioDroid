@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -23,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import net.programmierecke.radiodroid.Constants;
 
 public class MainActivity extends ListActivity {
@@ -82,7 +82,12 @@ public class MainActivity extends ListActivity {
 
 		Context context = getApplicationContext();
 		
-		if (!Utils.hasWifiConnection(context)) {
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+
+		if ( settings.getBoolean( "pref_toggle_allow_gprs_umts", false )
+			&& !Utils.hasWifiConnection(context) ) {
+			
 			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 			toneG.startTone(ToneGenerator.TONE_SUP_RADIO_NOTAVAIL, 2000);
 			Toast.makeText(
@@ -93,11 +98,24 @@ public class MainActivity extends ListActivity {
 					),
 					Toast.LENGTH_LONG ).show();
 			finish();
+		} else if ( !Utils.isNetworkAvailable(context) ) {
+			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+			toneG.startTone(ToneGenerator.TONE_SUP_RADIO_NOTAVAIL, 2000);
+			Toast.makeText(
+					context,
+					Html.fromHtml( String.format(
+							getString(R.string.no_network_connection),
+							Utils.getAppName(context))
+					),
+					Toast.LENGTH_LONG ).show();
+			finish();
 		}
 		
 		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
 	    String spLastStation = sp.getString("last_station_url",null);
-	    if ( spLastStation != null) {
+
+		if ( settings.getBoolean( "pref_toggle_play_last_station_on_restart", true )
+			&& ( spLastStation != null) ) {
 			// Toast.makeText(this, "Last played stream was: " + spLastStation, Toast.LENGTH_LONG).show();
 			RadioDroid thisApp = (RadioDroid) getApplication();
 			ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
@@ -131,7 +149,7 @@ public class MainActivity extends ListActivity {
 	final int MENU_TOPCLICKS = 3;
 	final int MENU_ALLSTATIONS = 4;
 	final int MENU_SEARCHSTATIONS = 5;
-	final int MENU_ABOUTAPPLICATION = 9;
+	final int MENU_SETTINGS = 9;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,7 +163,7 @@ public class MainActivity extends ListActivity {
 		menu.add(Menu.NONE, MENU_TOPCLICKS, Menu.NONE, getString( R.string.top_clicks ) );
 		menu.add(Menu.NONE, MENU_ALLSTATIONS, Menu.NONE, getString( R.string.all_stations ) );
 		menu.add(Menu.NONE, MENU_SEARCHSTATIONS, Menu.NONE, getString( R.string.search_stations) );
-		menu.add(Menu.NONE, MENU_ABOUTAPPLICATION, Menu.NONE, getString( R.string.about_application ) );
+		menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, getString( R.string.settings ) );
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		// getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -204,7 +222,7 @@ public class MainActivity extends ListActivity {
 			return true;
 		}
 
-		if (item.getItemId() == MENU_ABOUTAPPLICATION) {
+		if (item.getItemId() == MENU_SETTINGS) {
 			startActivity(new Intent( context, ApplicationPreferencesActivity.class));
 			return true;
 		}

@@ -2,8 +2,29 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     
-	<PreferenceCategory android:key="pref_key_about_application" android:title="@string/preferences__about_application">
-
+	<PreferenceCategory android:key="pref_key_settings" android:title="@string/preferences__about_application_category_title">
+    
+	    <CheckBoxPreference android:defaultValue="true"
+                            android:key="pref_toggle_play_last_station_on_restart"
+                            android:title="@string/preferences__play_last_station_on_restart_title"
+                            android:summary="@string/preferences__play_last_station_on_restart_summary"/>
+	    
+        <CheckBoxPreference android:defaultValue="true"
+                            android:key="pref_toggle__allow_gprs_umts"
+                            android:title="@string/preferences__allow_gprs_umts_title"
+                            android:summary="@string/preferences__allow_gprs_umts_summary"/>
+	 </PreferenceCategory>
+        	    
+     <PreferenceCategory android:key="pref_key_privacy_settings" android:title="@string/preferences__privacy_settings_category_title">
+        <CheckBoxPreference android:defaultValue="false"
+                            android:key="pref_toggle_notify_server_about_play_click"
+                            android:title="@string/preferences__notify_server_about_play_click_title"
+                            android:summary="@string/preferences__notify_server_about_play_click_summary"/>
+	    
+     </PreferenceCategory>
+        	    
+     <PreferenceCategory android:key="pref_key_app_controls" android:title="@string/preferences__app_controls_category_title">
+        
         <Preference android:key="pref_key_stop_playing"
                     android:title="@string/preferences__stop_playing"/>
         
@@ -24,5 +45,5 @@
         	android:title="@string/preferences__version" />
     	
     </PreferenceCategory>
-    
+    	
 </PreferenceScreen>

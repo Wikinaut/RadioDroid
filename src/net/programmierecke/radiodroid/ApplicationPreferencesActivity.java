@@ -46,7 +46,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	private static final String TOP_CLICKS = "pref_key_top_clicks";
 	private static final String ALL_STATIONS = "pref_key_all_stations";
 	private static final String SEARCH_STATIONS = "pref_key_search_stations";
-	private static final String ABOUT_APPLICATION = "pref_key_about_application_version";
+	private static final String SETTINGS = "pref_key_settings";
 
   @Override
   protected void onCreate( final Bundle savedInstanceState ) {
@@ -63,7 +63,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
     this.findPreference(TOP_CLICKS).setOnPreferenceClickListener(new StationListListener());
     this.findPreference(ALL_STATIONS).setOnPreferenceClickListener(new StationListListener());
     this.findPreference(SEARCH_STATIONS).setOnPreferenceClickListener(new AboutApplicationListener());
-    this.findPreference(ABOUT_APPLICATION).setOnPreferenceClickListener(new AboutApplicationListener());
+    this.findPreference(SETTINGS).setOnPreferenceClickListener(new AboutApplicationListener());
 
   }
   
@@ -72,7 +72,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	final int MENU_TOPCLICKS = 3;
 	final int MENU_ALLSTATIONS = 4;
 	final int MENU_SEARCHSTATIONS = 5;
-	final int MENU_ABOUTAPPLICATION = 9;
+	final int MENU_SETTINGS = 9;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -82,7 +82,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 		menu.add(Menu.NONE, MENU_TOPCLICKS, Menu.NONE, getString( R.string.top_clicks ) );
 		menu.add(Menu.NONE, MENU_ALLSTATIONS, Menu.NONE, getString( R.string.all_stations ) );
 		menu.add(Menu.NONE, MENU_SEARCHSTATIONS, Menu.NONE, getString( R.string.search_stations) );
-		menu.add(Menu.NONE, MENU_ABOUTAPPLICATION, Menu.NONE, getString( R.string.about_application ) );
+		menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, getString( R.string.settings ) );
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		// getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -127,7 +127,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 			return true;
 		}
 
-		if (item.getItemId() == MENU_ABOUTAPPLICATION) {
+		if (item.getItemId() == MENU_SETTINGS) {
 			startActivity(new Intent( context, ApplicationPreferencesActivity.class));
 			return true;
 		}

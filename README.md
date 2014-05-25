@@ -33,7 +33,7 @@ Status: 20140520
 
 - [ ] add a search function
 - [x] check WiFi/WLAN connection, show a warning, beep and close if WiFi is unavailable on start
-- [ ] add user option "WiFi/WLAN only"
+- [x] user preference "Allow GPRS/UMTS"
 - [x] add "Exit program" to the options menu
 - [ ] add a "low bitrate" flag, or "bitrate" field to the station data
 - [ ] add user option "Low bitrate streams only"
@@ -51,6 +51,6 @@ Status: 20140520
 - [ ] local cache of all station data
 - [ ] incremental/delta station data fetches based on comparing hashes, and/or daily deltas
 - [ ] add "History" function (list my last recently selected stations on top of the others)
-- [ ] add privacy option opt-in "allow the server to count my station play click"
-- [x] when restarting RadioDroid play the last played station
+- [x] add privacy option opt-in "allow the server to count my station play click"
+- [x] when restarting RadioDroid play the last played station (user preference)
 - [ ] add asx playlist file decoding support

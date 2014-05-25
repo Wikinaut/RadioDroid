@@ -36,6 +36,15 @@ public class RadioDroid extends Application {
 		
 	}
 	
+	public boolean isSameLastStationUrl(String stationUrl) {
+
+		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
+	    String spLastStation = sp.getString("last_station_url",null);
+		
+		return stationUrl.equals(spLastStation) && (spLastStation != null);
+
+	}
+	
 	public void setLastStationStatus(String status) {
 
 		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
