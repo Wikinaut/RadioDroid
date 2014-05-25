@@ -99,7 +99,7 @@ public class Utils {
 		return aList.toArray(new RadioStation[0]);
 	}
 
-	public static String getStationDataFromServer(String theURI) {
+	public static String getFromUrl(String theURI) {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(theURI);
@@ -119,6 +119,7 @@ public class Utils {
 				String line;
 				while ((line = reader.readLine()) != null) {
 					builder.append(line);
+					builder.append("\n");
 				}
 				
 			} else {

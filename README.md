@@ -51,5 +51,6 @@ Status: 20140520
 - [ ] local cache of all station data
 - [ ] incremental/delta station data fetches based on comparing hashes, and/or daily deltas
 - [ ] add "History" function (list my last recently selected stations on top of the others)
+- [ ] add privacy option opt-in "allow the server to count my station play click"
 - [x] when restarting RadioDroid play the last played station
 - [ ] add asx playlist file decoding support

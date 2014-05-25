@@ -2,18 +2,8 @@ package net.programmierecke.radiodroid;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.gson.Gson;
 
@@ -36,8 +26,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	protected static final int NOTIFY_ID = 1;
 	final String TAG = "PlayerService";
-	private String thisStationID;
-	private String thisStationName;
 	private RadioStation playingStation;
 
 	MediaPlayer thisMediaPlayer = null;
@@ -50,8 +38,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	
 			Gson gson = new Gson();
 			playingStation = gson.fromJson( theJsonRadioStation, RadioStation.class );
-			// thisStationName = thisStation.Name;
-			// thisStationID = thisStation.ID;
 			
 			if ( !thisApp.isPlayingSameLastStationUrl( playingStation.StreamUrl ) ) {
 				PlayerService.this.Stop();
@@ -185,39 +171,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		stopForeground(true);
 	}
 
-	public String downloadFeed(String theURI) {
-		StringBuilder builder = new StringBuilder();
-		HttpClient client = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(theURI);
-
-		try {
-
-			HttpResponse response = client.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream content = entity.getContent();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					builder.append(line);
-					builder.append('\n');
-				}
-			} else {
-				Log.e(TAG, "Failed to download file");
-			}
-			
-		} catch (ClientProtocolException e) {
-			Log.e(TAG, "" + e);
-		} catch (IOException e) {
-			Log.e(TAG, "" + e);
-		}
-
-		return builder.toString();
-
-	}
 
 	String decodeUrl(String theUrl) {
 		try {
@@ -231,7 +184,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 			if (aFileName.endsWith(".pls")) {
 				Log.v(TAG, "Found PLS file");
-				String theFile = Utils.getStationDataFromServer(theUrl);
+				String theFile = Utils.getFromUrl(theUrl);
 				BufferedReader aReader = new BufferedReader(new StringReader(theFile));
 				String str;
 				while ((str = aReader.readLine()) != null) {
@@ -244,7 +197,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				}
 			} else if (aFileName.endsWith(".m3u")) {
 				Log.v(TAG, "Found M3U file");
-				String theFile = Utils.getStationDataFromServer(theUrl);
+				String theFile = Utils.getFromUrl(theUrl);
 				BufferedReader aReader = new BufferedReader(new StringReader(theFile));
 				String str;
 				while ((str = aReader.readLine()) != null) {
