@@ -49,7 +49,7 @@ public class MainActivity extends ListActivity {
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
-				return Utils.downloadFeed(theURL);
+				return Utils.getStationDataFromServer(theURL);
 			}
 
 			@Override
@@ -66,6 +66,7 @@ public class MainActivity extends ListActivity {
 			}
 		}.execute();
 	}
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +75,8 @@ public class MainActivity extends ListActivity {
 		Intent anIntent = new Intent(this, PlayerService.class);
 		bindService(anIntent, svcConn, BIND_AUTO_CREATE);
 		startService(anIntent);
-
 		// gui stuff
+
 		thisArrayAdapter = new RadioStationList(this, R.layout.station_list);
 		setListAdapter(thisArrayAdapter);
 
@@ -97,7 +98,7 @@ public class MainActivity extends ListActivity {
 		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
 	    String spLastStation = sp.getString("last_station_url",null);
 	    if ( spLastStation != null) {
-			// Toast.makeText(this, "Last played stream was: " + spLastStation, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Last played stream was: " + spLastStation, Toast.LENGTH_LONG).show();
 			RadioDroid thisApp = (RadioDroid) getApplication();
 			ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
 	    }

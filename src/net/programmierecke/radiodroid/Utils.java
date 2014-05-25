@@ -99,7 +99,7 @@ public class Utils {
 		return aList.toArray(new RadioStation[0]);
 	}
 
-	public static String downloadFeed(String theURI) {
+	public static String getStationDataFromServer(String theURI) {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(theURI);

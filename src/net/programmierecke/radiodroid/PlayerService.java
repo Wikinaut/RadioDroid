@@ -231,7 +231,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 			if (aFileName.endsWith(".pls")) {
 				Log.v(TAG, "Found PLS file");
-				String theFile = downloadFeed(theUrl);
+				String theFile = Utils.getStationDataFromServer(theUrl);
 				BufferedReader aReader = new BufferedReader(new StringReader(theFile));
 				String str;
 				while ((str = aReader.readLine()) != null) {
@@ -244,7 +244,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				}
 			} else if (aFileName.endsWith(".m3u")) {
 				Log.v(TAG, "Found M3U file");
-				String theFile = downloadFeed(theUrl);
+				String theFile = Utils.getStationDataFromServer(theUrl);
 				BufferedReader aReader = new BufferedReader(new StringReader(theFile));
 				String str;
 				while ((str = aReader.readLine()) != null) {

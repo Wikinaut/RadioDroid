@@ -143,7 +143,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
-				return Utils.downloadFeed(theURL);
+				return Utils.getStationDataFromServer(theURL);
 			}
 
 			@Override
