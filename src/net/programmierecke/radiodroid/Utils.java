@@ -131,11 +131,22 @@ public class Utils {
 		} catch (ClientProtocolException e) {
 			
 			Log.e("", "" + e);
+        	httpGet.abort();
 			
 		} catch (IOException e) {
-			
+			 
+            // In case of an IOException the connection will be released
+            // back to the connection manager automatically		
 			Log.e("", "" + e);
 			
+		} catch (RuntimeException e) {
+		
+			// In case of an unexpected exception you may want to abort
+        	// the HTTP request in order to shut down the underlying
+        	// connection and release it back to the connection manager.
+			Log.e("", "" + e);
+			httpGet.abort();
+
 		}
 		
 		return builder.toString();

@@ -80,32 +80,38 @@ public class MainActivity extends ListActivity {
 		thisArrayAdapter = new RadioStationList(this, R.layout.station_list);
 		setListAdapter(thisArrayAdapter);
 
-		Context context = getApplicationContext();
-		
-		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        // Read the default values and set them as the current values.  
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);  
 
-		if ( settings.getBoolean( "pref_toggle_allow_gprs_umts", false )
-			&& !Utils.hasWifiConnection(context) ) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+        // Android bug workaround
+        // https://code.google.com/p/android/issues/detail?id=6641
+        // for all "false" defaultValues in preferences.xml 
+		prefs.edit().putBoolean("pref_toggle_allow_gprs_umts", prefs.getBoolean("pref_toggle_allow_gprs_umts", false)).commit();
+		prefs.edit().putBoolean("pref_toggle_notify_server_about_play_click", prefs.getBoolean("pref_toggle_notify_server_about_play_click", false)).commit();
+
+		if ( prefs.getBoolean( "pref_toggle_allow_gprs_umts", false )
+			&& !Utils.hasWifiConnection(this) ) {
 			
 			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 			toneG.startTone(ToneGenerator.TONE_SUP_RADIO_NOTAVAIL, 2000);
 			Toast.makeText(
-					context,
+					this,
 					Html.fromHtml( String.format(
 							getString(R.string.no_wifi_connection),
-							Utils.getAppName(context))
+							Utils.getAppName(this))
 					),
 					Toast.LENGTH_LONG ).show();
 			finish();
-		} else if ( !Utils.isNetworkAvailable(context) ) {
+		} else if ( !Utils.isNetworkAvailable(this) ) {
 			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 			toneG.startTone(ToneGenerator.TONE_SUP_RADIO_NOTAVAIL, 2000);
 			Toast.makeText(
-					context,
+					this,
 					Html.fromHtml( String.format(
 							getString(R.string.no_network_connection),
-							Utils.getAppName(context))
+							Utils.getAppName(this))
 					),
 					Toast.LENGTH_LONG ).show();
 			finish();
@@ -113,15 +119,15 @@ public class MainActivity extends ListActivity {
 		
 		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
 	    String spLastStation = sp.getString("last_station_url",null);
-
-		if ( settings.getBoolean( "pref_toggle_play_last_station_on_restart", true )
+		
+		if ( prefs.getBoolean( "pref_toggle_play_last_station_on_restart", true )
 			&& ( spLastStation != null) ) {
 			// Toast.makeText(this, "Last played stream was: " + spLastStation, Toast.LENGTH_LONG).show();
 			RadioDroid thisApp = (RadioDroid) getApplication();
 			ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
 	    }
 	    
-		setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
+		setTitle( Utils.getAppAndVersionName( this ) + " (" + getString(R.string.top_clicks) + ")" );
 		createStationList(Constants.TOP_CLICKS_URL);
 
 		ListView lv = getListView();

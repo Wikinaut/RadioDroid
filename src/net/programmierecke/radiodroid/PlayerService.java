@@ -47,22 +47,23 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				PlayerService.this.Stop();
 				PlayerService.this.PlayUrl( playingStation );
 
-				if	( !thisApp.isSameLastStationUrl( playingStation.StreamUrl ) ) {
-					Context context = getApplicationContext();
-					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+ 				if	( !thisApp.isSameLastStationUrl( playingStation.StreamUrl ) ) {
 
-					if ( settings.getBoolean( "pref_toggle_notify_server_about_play_click", true ) ) {
-						String response = Utils.getFromUrl( "http://www.radio-browser.info/?action=clicked&id=" + playingStation.ID );
+					PreferenceManager.setDefaultValues(thisContext, R.xml.preferences, false);
+					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(thisContext);
+
+					if (settings.getBoolean( "pref_toggle_notify_server_about_play_click", false ) ) {
+						Utils.getFromUrl( "http://www.radio-browser.info/?action=clicked&id=" + playingStation.ID );
 						Toast.makeText(
-								context,
+								thisContext,
 								Html.fromHtml( String.format(
 										getString(R.string.notify_server_about_play_click),
-										playingStation.ID + response )
+										playingStation.ID)
 								),
 								Toast.LENGTH_LONG ).show();
 					}
 				}
-
+					
 			}
 	
 			thisApp.setLastStationUrl( playingStation.StreamUrl );

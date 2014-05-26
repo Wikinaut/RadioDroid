@@ -17,13 +17,13 @@
     <string name="top_votes">top votes</string>
     <string name="top_clicks">top clicks</string>
     <string name="all_stations">all stations</string>
-    <string name="search_stations">search station</string>
+    <string name="search_stations">search stations</string>
     <string name="settings">settings</string>
     
     <string name="no_wifi_connection">No WiFi/WLAN connection available.&lt;br>%1$s cannot be started.&lt;br>Please activate your WiFi (WLAN) connection.</string>
     <string name="no_network_connection">No network (WiFi/WLAN/GPRS/UMTS) available.&lt;br>%1$s cannot be started.&lt;br>Please activate your WiFi (WLAN) connection.</string>
     <string name="auto_complete_stations">Search stations</string>
-    <string name="notify_server_about_play_click">You opted-in to send one play click count for station id #%1$s to the server.</string>
+    <string name="notify_server_about_play_click">Station click (station id #%1$s) is counted on the server.</string>
     
     <string-array name="stationList">
    		<item >Black</item>
@@ -50,7 +50,7 @@
     <string name="about__title_license">License</string>
     
     <!--  Application preferences activity -->
-    <string name="preferences__about_application_category_title">About</string>
+    <string name="preferences__settings_category_title">Settings</string>
 
     <string name="preferences__play_last_station_on_restart_title">Play last station</string>
     <string name="preferences__play_last_station_on_restart_summary">Whether the App shall automatically start playing the last selected station</string>
@@ -64,10 +64,13 @@
     <string name="preferences__app_controls_category_title">Application controls</string>
     <string name="preferences__exit_application">exit application</string>
     <string name="preferences__stop_playing">stop playing</string>
-    <string name="preferences__top_votes">top votes</string>
-    <string name="preferences__top_clicks">top clicks</string>
-    <string name="preferences__all_stations">all stations</string>
-    <string name="preferences__search_stations">search stations</string>
+    
+    <string name="preferences__station_lists">Station lists</string>
+    <string name="preferences__top_votes">Top votes</string>
+    <string name="preferences__top_clicks">Top clicks</string>
+    <string name="preferences__all_stations">All stations</string>
+    <string name="preferences__search_stations">Search Stations</string>
+    <string name="preferences__about_application_category_title">About</string>
     <string name="preferences__version">Version</string>
                 
     
