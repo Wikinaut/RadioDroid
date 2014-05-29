@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:key="first_preferencescreen">
     
 	<PreferenceCategory android:key="pref_key_settings" android:title="@string/preferences__settings_category_title">
     
@@ -26,13 +27,13 @@
        		    
      <PreferenceCategory android:key="pref_key_app_controls" android:title="@string/preferences__app_controls_category_title">
 
+        <Preference android:key="pref_key_stop_playing"
+                    android:title="@string/preferences__stop_playing"/>
+        
         <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
             android:key="second_preferencescreen"
             android:title="@string/preferences__station_lists">
          
-        <Preference android:key="pref_key_stop_playing"
-                    android:title="@string/preferences__stop_playing"/>
-        
     	<Preference android:key="pref_key_top_votes"
                     android:title="@string/preferences__top_votes"/>
     	
@@ -50,7 +51,7 @@
      </PreferenceCategory>
      
 	 <PreferenceCategory android:key="pref_key_about" android:title="@string/preferences__about_application_category_title">
-	 	<net.programmierecke.radiodroid.preferences.AboutApplicationPreference
+	 	<net.programmierecke.radiodroid.AboutApplicationPreference
     	    android:key="pref_key_about_application"
         	android:title="@string/preferences__version" />
  	 </PreferenceCategory>

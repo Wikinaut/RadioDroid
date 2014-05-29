@@ -1,9 +1,8 @@
-package net.programmierecke.radiodroid.preferences;
+package net.programmierecke.radiodroid;
 
 import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
-import net.programmierecke.radiodroid.Utils;
 
 public class AboutApplicationPreference extends Preference {
 

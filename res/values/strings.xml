@@ -23,7 +23,7 @@
     <string name="no_wifi_connection">No WiFi/WLAN connection available.&lt;br>%1$s cannot be started.&lt;br>Please activate your WiFi (WLAN) connection.</string>
     <string name="no_network_connection">No network (WiFi/WLAN/GPRS/UMTS) available.&lt;br>%1$s cannot be started.&lt;br>Please activate your WiFi (WLAN) connection.</string>
     <string name="auto_complete_stations">Search stations</string>
-    <string name="notify_server_about_play_click">Station click (station id #%1$s) is counted on the server.</string>
+    <string name="notify_server_about_play_click">Station click is counted on the server (station id %1$s).</string>
     
     <string-array name="stationList">
    		<item >Black</item>
@@ -59,11 +59,11 @@
     
     <string name="preferences__privacy_settings_category_title">Privacy settings</string>
     <string name="preferences__notify_server_about_play_click_title">Count station clicks</string>
-    <string name="preferences__notify_server_about_play_click_summary">Allow the server to count when you play a station: the app sends an anonymous \"clicked\" signal back to the server.</string>
+    <string name="preferences__notify_server_about_play_click_summary">Allow the server to count when you play a station: the App sends an anonymous \"clicked\" signal back to the server.</string>
 
     <string name="preferences__app_controls_category_title">Application controls</string>
-    <string name="preferences__exit_application">exit application</string>
-    <string name="preferences__stop_playing">stop playing</string>
+    <string name="preferences__exit_application">Exit application</string>
+    <string name="preferences__stop_playing">Stop playing</string>
     
     <string name="preferences__station_lists">Station lists</string>
     <string name="preferences__top_votes">Top votes</string>

@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.Locale;
 
 import com.google.gson.Gson;
 
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -26,8 +28,35 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
+
 public class PlayerService extends Service implements OnBufferingUpdateListener {
 
+	private class BackgroundTask extends AsyncTask <String, Void, Void> {
+		  
+	    @Override
+	    protected void onPreExecute() {
+			Toast.makeText(
+					thisContext,
+					Html.fromHtml( String.format(
+							getString(R.string.notify_server_about_play_click),
+							playingStation.ID)
+					),
+					Toast.LENGTH_LONG ).show();
+	    }
+	     
+	    @Override
+	    protected void onPostExecute(Void result) {
+	    }
+	     
+	    @Override
+	    protected Void doInBackground(String... params) {
+	   		Utils.getFromUrl( params[0] );
+	        return null;
+	    }
+	     
+	}
+	
+	
 	protected static final int NOTIFY_ID = 1;
 	final String TAG = "PlayerService";
 	private RadioStation playingStation;
@@ -53,14 +82,8 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(thisContext);
 
 					if (settings.getBoolean( "pref_toggle_notify_server_about_play_click", false ) ) {
-						Utils.getFromUrl( "http://www.radio-browser.info/?action=clicked&id=" + playingStation.ID );
-						Toast.makeText(
-								thisContext,
-								Html.fromHtml( String.format(
-										getString(R.string.notify_server_about_play_click),
-										playingStation.ID)
-								),
-								Toast.LENGTH_LONG ).show();
+						BackgroundTask serverCountTask = new BackgroundTask();
+				   		serverCountTask.execute( "http://www.radio-browser.info/?action=clicked&id=" + playingStation.ID );
 					}
 				}
 					

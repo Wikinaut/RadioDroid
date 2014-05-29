@@ -2,6 +2,7 @@ package net.programmierecke.radiodroid;
 
 import android.preference.PreferenceActivity;
 import android.preference.Preference;
+import android.preference.PreferenceScreen;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -220,6 +221,18 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	    	return true;
 
 	    }
+  }
+
+  // https://code.google.com/p/android/issues/detail?id=4611#c35
+  @SuppressWarnings("deprecation")
+  @Override
+  public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+  	super.onPreferenceTreeClick(preferenceScreen, preference);
+  	if (preference!=null)
+	    	if (preference instanceof PreferenceScreen)
+	        	if (((PreferenceScreen)preference).getDialog()!=null)
+	        		((PreferenceScreen)preference).getDialog().getWindow().getDecorView().setBackgroundDrawable(this.getWindow().getDecorView().getBackground().getConstantState().newDrawable());
+  	return false;
   }
 
    
