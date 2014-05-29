@@ -20,15 +20,11 @@ import org.json.JSONObject;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 public class Utils {

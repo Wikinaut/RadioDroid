@@ -10,6 +10,7 @@ public class RadioStation {
 	public String ID="";
 	public String Name="";
 	public String StreamUrl="";
+	public String Status="";
 	public String HomePageUrl="";
 	public String IconUrl="";
 	public String Country="";

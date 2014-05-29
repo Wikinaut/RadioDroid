@@ -82,7 +82,6 @@ public class MainActivity extends ListActivity {
 
         // Read the default values and set them as the current values.  
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);  
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
         // Android bug workaround
@@ -117,16 +116,15 @@ public class MainActivity extends ListActivity {
 			finish();
 		}
 		
-		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
-	    String spLastStation = sp.getString("last_station_url",null);
+		RadioDroid thisApp = (RadioDroid) getApplication();
+		String lastStation = thisApp.getLastStationStreamUrl();
 		
 		if ( prefs.getBoolean( "pref_toggle_play_last_station_on_restart", true )
-			&& ( spLastStation != null) ) {
-			// Toast.makeText(this, "Last played stream was: " + spLastStation, Toast.LENGTH_LONG).show();
-			RadioDroid thisApp = (RadioDroid) getApplication();
+			&& ( lastStation != null) ) {
+			// Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
 			ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
 	    }
-	    
+
 		setTitle( Utils.getAppAndVersionName( this ) + " (" + getString(R.string.top_clicks) + ")" );
 		createStationList(Constants.TOP_CLICKS_URL);
 

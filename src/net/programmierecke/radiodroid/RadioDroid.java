@@ -5,55 +5,65 @@ import com.google.gson.Gson;
 import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
-// import android.widget.Toast;
+import android.widget.Toast;
 
 public class RadioDroid extends Application {
 
 	public RadioDroid() {
 	}
 
-	public void setLastStationUrl(String stationUrl) {
-
-		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
-		if ( ( stationUrl == null ) || stationUrl.trim().equals("") ) {
-			sp.edit().remove( "last_station_url" ).commit();
-		} else {
-			// Toast.makeText(this, "now playing: " + stationUrl, Toast.LENGTH_LONG).show();
-			sp.edit().putString( "last_station_url", stationUrl ).commit();
-		}
-	}
-
 	public boolean isPlayingSameLastStationUrl(String stationUrl) {
 
-		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
-	    String spLastStation = sp.getString("last_station_url",null);
-	    String spLastStationStatus = sp.getString("last_station_status",null);
+		RadioStation lastStation = getRadioStationPersistentStorage();
 		
-		boolean isSameStation = ( stationUrl.equals(spLastStation) && (spLastStation != null) );
-		boolean isPlaying = (spLastStationStatus == "play"); 
+		if (lastStation != null) {
 
-		return isSameStation && isPlaying;
-		
+			boolean isSameStation = (lastStation.StreamUrl != null) && stationUrl.equals(lastStation.StreamUrl);
+			boolean isPlaying = (lastStation.Status == "play");
+			
+			return isSameStation && isPlaying;
+			
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean isSameLastStationUrl(String stationUrl) {
 
-		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
-	    String spLastStation = sp.getString("last_station_url",null);
+		RadioStation lastStation = getRadioStationPersistentStorage();
 		
-		return stationUrl.equals(spLastStation) && (spLastStation != null);
-
+		if (lastStation != null) {
+			return (lastStation.StreamUrl != null) && stationUrl.equals(lastStation.StreamUrl);
+		} else {
+			return false;
+		}
 	}
 	
+
 	public void setLastStationStatus(String status) {
 
-		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
-		if ( ( status == null ) || status.trim().equals("") ) {
-			sp.edit().remove( "last_station_status" ).commit();
-		} else {
-			// Toast.makeText(this, "status: " + status, Toast.LENGTH_LONG).show();
-			sp.edit().putString( "last_station_status", status ).commit();
-		}
+		RadioStation lastStation = getRadioStationPersistentStorage();
+		lastStation.Status = status;
+		putRadioStationPersistentStorage( lastStation );		    
+	}
+
+	public String getLastStationStatus() {
+
+		RadioStation lastStation = getRadioStationPersistentStorage();
+		return (lastStation != null) ? lastStation.Status : "";
+	}
+
+	public void setLastStationStreamUrl(String stationUrl) {
+		RadioStation lastStation = getRadioStationPersistentStorage();
+		lastStation.StreamUrl = stationUrl;
+		putRadioStationPersistentStorage( lastStation );		    
+	}
+
+	public String getLastStationStreamUrl() {
+
+		RadioStation lastStation = getRadioStationPersistentStorage();
+		return (lastStation != null) ? lastStation.StreamUrl : "";
+
 	}
 
 	public final void putRadioStationPersistentStorage(RadioStation station) {
@@ -62,7 +72,6 @@ public class RadioDroid extends Application {
 	    Gson gson = new Gson();
 	    
 	    String jsonString = gson.toJson( station );
-		// Toast.makeText(this, "PUT: " + jsonString, Toast.LENGTH_LONG).show();
 	    sp.edit().putString( "RadioDroid", jsonString ).commit();
 
 	}
@@ -70,7 +79,6 @@ public class RadioDroid extends Application {
 	public final void putJsonRadioStationPersistentStorage( String jsonRadioStation) {
 
 		SharedPreferences sp = getSharedPreferences("RadioDroid", Activity.MODE_PRIVATE);
-		// Toast.makeText(this, "PUT JSON: " + jsonRadioStation, Toast.LENGTH_LONG).show();
 	    sp.edit().putString( "RadioDroid", jsonRadioStation ).commit();
 
 	}
@@ -79,10 +87,15 @@ public class RadioDroid extends Application {
 	public final RadioStation getRadioStationPersistentStorage() {
 	
 		SharedPreferences sp = getSharedPreferences( "RadioDroid", Activity.MODE_PRIVATE );
-	    String jsonString = sp.getString( "RadioDroid", null );
+		String jsonString = sp.getString( "RadioDroid", null );
 
 	    if (jsonString == null) {
-	        return null;
+
+			RadioStation initStation = new RadioStation();
+			putRadioStationPersistentStorage(initStation);
+			sp = getSharedPreferences( "RadioDroid", Activity.MODE_PRIVATE );
+			jsonString = sp.getString( "RadioDroid", null );
+
 	    }
 
 	    Gson gson = new Gson();

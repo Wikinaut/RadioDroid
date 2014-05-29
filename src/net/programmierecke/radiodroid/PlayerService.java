@@ -89,13 +89,15 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 					
 			}
 	
-			thisApp.setLastStationUrl( playingStation.StreamUrl );
-			thisApp.setLastStationStatus( "play" );
 			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
+			thisApp.setLastStationStatus( "play" );
+
 		}
 
 		public void Stop() throws RemoteException {
+			RadioDroid thisApp = (RadioDroid) getApplication();
 			PlayerService.this.Stop();
+			thisApp.setLastStationStatus( "stop" );
 		}
 
 		@Override
