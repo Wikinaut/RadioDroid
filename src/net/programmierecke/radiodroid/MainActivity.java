@@ -1,6 +1,5 @@
 package net.programmierecke.radiodroid;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -45,7 +44,7 @@ public class MainActivity extends ListActivity {
 	};
 
 	private void createStationList(final String theURL) {
-		thisProgressLoading = ProgressDialog.show(MainActivity.this, "", "Loading...");
+		thisProgressLoading = ProgressDialog.show(MainActivity.this, "", "Loading the station list from server...");
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
@@ -56,7 +55,7 @@ public class MainActivity extends ListActivity {
 			protected void onPostExecute(String result) {
 				if (!isFinishing()) {
 					thisArrayAdapter.clear();
-					for (RadioStation aStation : Utils.DecodeJson(result)) {
+					for (RadioStation aStation : Utils.decodeJson(result)) {
 						thisArrayAdapter.add(aStation);
 					}
 					getListView().invalidate();
@@ -90,7 +89,7 @@ public class MainActivity extends ListActivity {
 		prefs.edit().putBoolean("pref_toggle_allow_gprs_umts", prefs.getBoolean("pref_toggle_allow_gprs_umts", false)).commit();
 		prefs.edit().putBoolean("pref_toggle_notify_server_about_play_click", prefs.getBoolean("pref_toggle_notify_server_about_play_click", false)).commit();
 
-		if ( prefs.getBoolean( "pref_toggle_allow_gprs_umts", false )
+		if ( !prefs.getBoolean( "pref_toggle_allow_gprs_umts", false )
 			&& !Utils.hasWifiConnection(this) ) {
 			
 			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
@@ -103,7 +102,11 @@ public class MainActivity extends ListActivity {
 					),
 					Toast.LENGTH_LONG ).show();
 			finish();
-		} else if ( !Utils.isNetworkAvailable(this) ) {
+			return;
+		}
+		
+		if ( prefs.getBoolean( "pref_toggle_allow_gprs_umts", false )
+			&& !Utils.isNetworkAvailable(this) ) {
 			ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 			toneG.startTone(ToneGenerator.TONE_SUP_RADIO_NOTAVAIL, 2000);
 			Toast.makeText(
@@ -114,13 +117,14 @@ public class MainActivity extends ListActivity {
 					),
 					Toast.LENGTH_LONG ).show();
 			finish();
+			return;
 		}
 		
 		RadioDroid thisApp = (RadioDroid) getApplication();
 		String lastStation = thisApp.getLastStationStreamUrl();
 		
 		if ( prefs.getBoolean( "pref_toggle_play_last_station_on_restart", true )
-			&& ( lastStation != null) ) {
+			&& !lastStation.equals("") ) {
 			// Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
 			ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
 	    }

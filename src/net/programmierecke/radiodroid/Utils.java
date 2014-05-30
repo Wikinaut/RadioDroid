@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 public class Utils {
-	public static RadioStation[] DecodeJson(String result) {
+	public static RadioStation[] decodeJson(String result) {
 		List<RadioStation> aList = new ArrayList<RadioStation>();
 		List<String> aTags = new ArrayList<String>();
 

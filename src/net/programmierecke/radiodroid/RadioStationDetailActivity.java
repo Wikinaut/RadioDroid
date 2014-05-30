@@ -23,6 +23,7 @@ import android.widget.TextView;
 public class RadioStationDetailActivity extends Activity {
 	ProgressDialog thisProgressLoading;
 	RadioStation thisStation;
+	RadioStation lastStation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,34 @@ public class RadioStationDetailActivity extends Activity {
 		bindService(anIntent, svcConn, BIND_AUTO_CREATE);
 		startService(anIntent);
 
-		thisProgressLoading = ProgressDialog.show(RadioStationDetailActivity.this, "", "Loading...");
-		new AsyncTask<Void, Void, String>() {
+		RadioDroid thisApp = (RadioDroid) getApplication(); 
+		lastStation = thisApp.getRadioStationPersistentStorage();
+		
+		if ( aStationID.equals(lastStation.ID) ) {
+
+			createStationDetailView(lastStation);
+
+			new AsyncTask<Void, Void, Void>() {
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+					if (!isFinishing()) {
+						Play();
+					}
+				}
+
+			}.execute();
+
+		} else {
+
+			thisProgressLoading = ProgressDialog.show(RadioStationDetailActivity.this, "", "Loading the station details from server...");
+			new AsyncTask<Void, Void, String>() {
+
 			@Override
 			protected String doInBackground(Void... params) {
 				return Utils.getFromUrl(String.format(Locale.US, "http://www.radio-browser.info/webservice/json/stations/byid/%s", aStationID));
@@ -47,7 +74,7 @@ public class RadioStationDetailActivity extends Activity {
 			protected void onPostExecute(String result) {
 				if (!isFinishing()) {
 					if (result != null) {
-						RadioStation[] aStationList = Utils.DecodeJson(result);
+						RadioStation[] aStationList = Utils.decodeJson(result);
 						if (aStationList.length == 1) {
 							thisStation = aStationList[0];
 							createStationDetailView(thisStation);
@@ -60,6 +87,8 @@ public class RadioStationDetailActivity extends Activity {
 			}
 
 		}.execute();
+		
+		}
 	}
 
 	private void createStationDetailView(RadioStation radioStation) {
@@ -114,7 +143,12 @@ public class RadioStationDetailActivity extends Activity {
 	}
 
 	private void Play() {
-		if (thisPlayerService != null) {
+		Log.v("stationdetail", "play");
+		if ( thisPlayerService == null ) {
+			Log.v("stationdetail","playerservice is null" );
+		}
+
+		if ( thisPlayerService != null ) {
 			try {
 				Button aButtonPlay = (Button) findViewById(R.id.detail_button_play);
 				aButtonPlay.setVisibility(View.GONE);

@@ -151,7 +151,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 			protected void onPostExecute(String result) {
 				if (!isFinishing()) {
 					thisArrayAdapter.clear();
-					for (RadioStation aStation : Utils.DecodeJson(result)) {
+					for (RadioStation aStation : Utils.decodeJson(result)) {
 						thisArrayAdapter.add(aStation);
 					}
 					getListView().invalidate();

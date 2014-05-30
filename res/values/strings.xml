@@ -52,7 +52,7 @@
     <!--  Application preferences activity -->
     <string name="preferences__settings_category_title">Settings</string>
 
-    <string name="preferences__play_last_station_on_restart_title">Play last station</string>
+    <string name="preferences__play_last_station_on_restart_title">Auto-play last station</string>
     <string name="preferences__play_last_station_on_restart_summary">Whether the App shall automatically start playing the last selected station</string>
     <string name="preferences__allow_gprs_umts_title">Allow GPRS/UMTS</string>
     <string name="preferences__allow_gprs_umts_summary">Whether the App may use mobile GPRS/UMTS connections - or WiFi/WLAN only</string>

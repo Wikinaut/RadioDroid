@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 public class RadioDroid extends Application {
 
