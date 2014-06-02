@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +83,9 @@ public class Utils {
 						aStation.TagsAll = TextUtils.join(", ", aTags);
 					}					
 
-					aStation.IconUrl = html(o.getString("favicon"));
+					String favicon = o.getString("favicon"); 
+					aStation.IconUrl = favicon.isEmpty() ? "" : favicon;
+
 					aStation.Language = html(o.getString("language"));
 				
 					aList.add(aStation);
@@ -134,11 +137,15 @@ public class Utils {
 			Log.e("", "" + e);
         	httpGet.abort();
 			
-		} catch (IOException e) {
+		} catch (UnknownHostException /* IOException */ e) {
 			 
             // In case of an IOException the connection will be released
             // back to the connection manager automatically		
-			Log.e("", "" + e);
+			Log.e("getFromUrl", "UnknownHostException " + e + " " + theURI);
+			
+		} catch (IOException e) {
+
+			Log.e("getFromUrl", "IOException " + e + " " + theURI);
 			
 		} catch (RuntimeException e) {
 		

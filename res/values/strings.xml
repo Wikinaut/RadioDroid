@@ -73,5 +73,7 @@
     <string name="preferences__about_application_category_title">About</string>
     <string name="preferences__version">Version</string>
                 
+    <string name="loading_station_details_from_server">Loading the station details from the server</string>
+    <string name="loading_station_list_from_server">Loading the station list from the server</string>
     
 </resources>

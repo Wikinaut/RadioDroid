@@ -175,7 +175,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	    String prefKey = preference.getKey();
 	    
 	  	if ( prefKey.equals(TOP_CLICKS) ) {
-	  			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
+	  		setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
 	    	createStationList(Constants.TOP_CLICKS_URL);
 	  	} else if ( prefKey.equals(TOP_VOTES) ) {
 			setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_votes) + ")" );

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -70,11 +71,16 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 			ImageView anImageView = (ImageView) v.findViewById(R.id.imageViewIcon);
 
 			// new DownloadImageTask(anImageView).execute(aStation.IconUrl);
-			if ( iconCache.containsKey(aStation.IconUrl) ) {
+
+			if ( aStation.IconUrl.isEmpty() ) {
+				
+				anImageView.setImageBitmap(null);
+			
+			} else if ( iconCache.containsKey(aStation.IconUrl) ) {
 
 				Bitmap aBitmap = iconCache.get(aStation.IconUrl);
 				
-				if (aBitmap != null) {
+				if ( aBitmap != null) {
 					
 					anImageView.setImageBitmap(aBitmap);
 					
@@ -110,7 +116,7 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 			} 
 			
 		}
-
+		
 		return v;
 	}
 
@@ -151,11 +157,18 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 										
 									} catch (FileNotFoundException e) {
 										
-										Log.e("", "" + e);
+										Log.e("iconCache", "FileNotFoundException " + e);
+										iconCache.put(queuedItem.url, null);
 										
+									} catch (UnknownHostException e) {
+										
+										Log.e("iconCache", "UnknownHostException " + e);
+										iconCache.put(queuedItem.url, null);
+
 									} catch (IOException e) {
 										
-										Log.e("", "" + e);
+										Log.e("iconCache", "IOException " + e);
+										iconCache.put(queuedItem.url, null);
 										
 									}
 									
@@ -167,7 +180,7 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 					}
 				} catch (Exception e) {
 					
-					Log.e("Error", "" + e);
+					Log.e("iconCache", "" + e + " <= " + queuedItem.url);
 					iconCache.put(queuedItem.url, null);
 					
 				}

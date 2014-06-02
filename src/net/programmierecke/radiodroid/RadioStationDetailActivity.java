@@ -40,7 +40,7 @@ public class RadioStationDetailActivity extends Activity {
 		RadioDroid thisApp = (RadioDroid) getApplication(); 
 		lastStation = thisApp.getRadioStationPersistentStorage();
 		
-		if ( aStationID.equals(lastStation.ID) ) {
+		if ( false /* aStationID.equals(lastStation.ID) */ ) {
 
 			createStationDetailView(lastStation);
 
@@ -62,7 +62,11 @@ public class RadioStationDetailActivity extends Activity {
 
 		} else {
 
-			thisProgressLoading = ProgressDialog.show(RadioStationDetailActivity.this, "", "Loading the station details from server...");
+			thisProgressLoading = ProgressDialog.show(
+				RadioStationDetailActivity.this,
+				"",
+				getString(R.string.loading_station_details_from_server)
+			);
 			new AsyncTask<Void, Void, String>() {
 
 			@Override

@@ -44,7 +44,11 @@ public class MainActivity extends ListActivity {
 	};
 
 	private void createStationList(final String theURL) {
-		thisProgressLoading = ProgressDialog.show(MainActivity.this, "", "Loading the station list from server...");
+		thisProgressLoading = ProgressDialog.show(
+			MainActivity.this,
+			"",
+			getString(R.string.loading_station_list_from_server)
+		);
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
@@ -123,18 +127,20 @@ public class MainActivity extends ListActivity {
 		RadioDroid thisApp = (RadioDroid) getApplication();
 		String lastStation = thisApp.getLastStationStreamUrl();
 		
-		if ( prefs.getBoolean( "pref_toggle_play_last_station_on_restart", true )
-			&& !lastStation.equals("") ) {
-			// Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
-			ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
-	    }
-
 		setTitle( Utils.getAppAndVersionName( this ) + " (" + getString(R.string.top_clicks) + ")" );
+
+		if ( prefs.getBoolean( "pref_toggle_play_last_station_on_restart", true )
+				&& !lastStation.equals("") ) {
+				Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
+				ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
+		} else {
+
 		createStationList(Constants.TOP_CLICKS_URL);
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		// registerForContextMenu(lv);
+
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object anObject = parent.getItemAtPosition(position);
@@ -143,6 +149,8 @@ public class MainActivity extends ListActivity {
 				}
 			}
 		});
+
+		}
 	}
 
 	void ClickOnItem(RadioStation theStation) {
