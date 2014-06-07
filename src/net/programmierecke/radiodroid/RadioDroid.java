@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class RadioDroid extends Application {
 
@@ -17,10 +18,9 @@ public class RadioDroid extends Application {
 		
 		if (lastStation != null) {
 
-			boolean isSameStation = (lastStation.StreamUrl != null) && stationUrl.equals(lastStation.StreamUrl);
-			boolean isPlaying = (lastStation.Status == "play");
-			
-			return isSameStation && isPlaying;
+			boolean isSameStation = ( lastStation.StreamUrl != null ) && stationUrl.equals(lastStation.StreamUrl);
+			boolean isPlaying = ( lastStation.Status.equals("play") );
+			return isSameStation && isPlaying; 
 			
 		} else {
 			return false;

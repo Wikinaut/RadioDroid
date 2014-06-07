@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string-array name="pref_network_entries">
+    <item>@string/preferences__wifi_only</item>
+    <item>@string/preferences__wifi_and_umts</item>
+    <item>@string/preferences__umts_only</item>
+  </string-array>
+  
+  <string-array name="pref_network_values" translatable="false">
+    <item>wifionly</item>
+    <item>wifiandumts</item>
+    <item>umtsonly</item>
+  </string-array>
+  
+</resources>

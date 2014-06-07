@@ -27,11 +27,12 @@ import net.programmierecke.radiodroid.Constants;
 
 public class MainActivity extends ListActivity {
 
+	IPlayerService thisPlayerService;
+
 	ProgressDialog thisProgressLoading;
 	RadioStationList thisArrayAdapter = null;
 
 	private static final String TAG = "RadioDroid";
-	IPlayerService thisPlayerService;
 
 	private ServiceConnection svcConn = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
@@ -70,14 +71,15 @@ public class MainActivity extends ListActivity {
 		}.execute();
 	}
 	
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.v("mainactivity","onCreate" );
 
-		Intent anIntent = new Intent(this, PlayerService.class);
-		bindService(anIntent, svcConn, BIND_AUTO_CREATE);
-		startService(anIntent);
+		Intent playerServiceIntent = new Intent(getBaseContext(), PlayerService.class);
+		startService(playerServiceIntent);
+		bindService(playerServiceIntent, svcConn, BIND_AUTO_CREATE);
 		
 		// gui stuff
 		thisArrayAdapter = new RadioStationList(this, R.layout.station_list);
@@ -93,6 +95,7 @@ public class MainActivity extends ListActivity {
 		prefs.edit().putBoolean("pref_toggle_allow_gprs_umts", prefs.getBoolean("pref_toggle_allow_gprs_umts", false)).commit();
 		prefs.edit().putBoolean("pref_toggle_notify_server_about_play_click", prefs.getBoolean("pref_toggle_notify_server_about_play_click", false)).commit();
 
+		/*
 		if ( !prefs.getBoolean( "pref_toggle_allow_gprs_umts", false )
 			&& !Utils.hasWifiConnection(this) ) {
 			
@@ -123,6 +126,7 @@ public class MainActivity extends ListActivity {
 			finish();
 			return;
 		}
+		*/
 		
 		RadioDroid thisApp = (RadioDroid) getApplication();
 		String lastStation = thisApp.getLastStationStreamUrl();
@@ -154,7 +158,8 @@ public class MainActivity extends ListActivity {
 	}
 
 	void ClickOnItem(RadioStation theStation) {
-		Intent anIntent = new Intent(getBaseContext(), RadioStationDetailActivity.class);
+
+		Intent anIntent = new Intent( getBaseContext(), RadioStationDetailActivity.class);
 		anIntent.putExtra("stationid", theStation.ID);
 		startActivity(anIntent);
 	}
@@ -195,23 +200,27 @@ public class MainActivity extends ListActivity {
 
 		if (item.getItemId() == MENU_EXIT) {
 			Log.v(TAG, "menu : exit");
+			/*
 			try {
 				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);
 			}
+			*/
 			finish();
 		}
 
 		if (item.getItemId() == MENU_STOP) {
 			Log.v(TAG, "menu : stop");
+			/*
 			try {
 				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);
 			}
+			*/
 			return true;
 		}
 

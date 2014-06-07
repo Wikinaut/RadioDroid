@@ -8,8 +8,9 @@
     <string name="detail_language">Language</string>
     <string name="detail_weblink">Homepage</string>
     <string name="detail_stream_url_title">Stream</string>
-    <string name="detail_play">click to play</string>
-    <string name="detail_stop">click to stop</string>
+    <string name="detail_play">PLAY</string>
+    <string name="detail_stop">PAUSE</string>
+    <string name="detail_exit">EXIT</string>
     
     <!-- Option menu items -->
     <string name="exit_app">exit %1$s</string>
@@ -54,9 +55,13 @@
 
     <string name="preferences__play_last_station_on_restart_title">Auto-play last station</string>
     <string name="preferences__play_last_station_on_restart_summary">Whether the App shall automatically start playing the last selected station</string>
-    <string name="preferences__allow_gprs_umts_title">Allow GPRS/UMTS</string>
-    <string name="preferences__allow_gprs_umts_summary">Whether the App may use mobile GPRS/UMTS connections - or WiFi/WLAN only</string>
-    
+    <string name="preferences__network_settings_summary">Whether the App may use mobile GPRS/UMTS connections - or WiFi/WLAN only</string>
+ 
+    <string name="preferences__network_settings">Network settings</string>
+    <string name="preferences__wifi_only">WiFi/WLAN only</string>
+    <string name="preferences__wifi_and_umts">WiFi/WLAN and GPRS/UMTS</string>
+    <string name="preferences__umts_only">GPRS/UMTS only</string>
+  
     <string name="preferences__privacy_settings_category_title">Privacy settings</string>
     <string name="preferences__notify_server_about_play_click_title">Count station clicks</string>
     <string name="preferences__notify_server_about_play_click_summary">Allow the server to count when you play a station: the App sends an anonymous \"clicked\" signal back to the server.</string>

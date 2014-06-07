@@ -15,32 +15,48 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 public class RadioStationDetailActivity extends Activity {
+
+	IPlayerService thisPlayerService;
+	
 	ProgressDialog thisProgressLoading;
 	RadioStation thisStation;
 	RadioStation lastStation;
 
 	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.v("stationdetail","onPause" );
+		if ( svcConn != null ) {
+			unbindService( svcConn );
+		}
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.v("stationdetail","onCreate" );
+		
 		setContentView(R.layout.station_detail);
 
 		Bundle anExtras = getIntent().getExtras();
 		final String aStationID = anExtras.getString("stationid");
 
-		Intent anIntent = new Intent(this, PlayerService.class);
-		bindService(anIntent, svcConn, BIND_AUTO_CREATE);
-		startService(anIntent);
-
+		Intent playerServiceIntent = new Intent( getBaseContext(), PlayerService.class);
+		startService(playerServiceIntent);
+		bindService(playerServiceIntent, svcConn, BIND_AUTO_CREATE);
+		
 		RadioDroid thisApp = (RadioDroid) getApplication(); 
 		lastStation = thisApp.getRadioStationPersistentStorage();
 		
-		if ( false /* aStationID.equals(lastStation.ID) */ ) {
+		if ( aStationID.equals(lastStation.ID) ) {
 
 			createStationDetailView(lastStation);
 
@@ -131,28 +147,30 @@ public class RadioStationDetailActivity extends Activity {
 			}
 		});
 
-		Button aButtonPlay = (Button) findViewById(R.id.detail_button_play);
-		aButtonPlay.setOnClickListener(new View.OnClickListener() {
+		Button buttonPlay = (Button) findViewById(R.id.detail_button_play);
+		buttonPlay.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Play();
 			}
 		});
 
-		Button aButtonStop = (Button) findViewById(R.id.detail_button_stop);
-		aButtonStop.setOnClickListener(new View.OnClickListener() {
+		Button buttonStop = (Button) findViewById(R.id.detail_button_stop);
+		buttonStop.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Stop();
 			}
 		});
+		
 	}
 
 	private void Play() {
 		Log.v("stationdetail", "play");
 		if ( thisPlayerService == null ) {
-			Log.v("stationdetail","playerservice is null" );
+			Log.v("stationdetail","PLAY playerservice is null." );
 		}
 
 		if ( thisPlayerService != null ) {
+			Log.v("stationdetail","PLAY playerservice != null." );
 			try {
 				Button aButtonPlay = (Button) findViewById(R.id.detail_button_play);
 				aButtonPlay.setVisibility(View.GONE);
@@ -167,20 +185,23 @@ public class RadioStationDetailActivity extends Activity {
 	}
 
 	private void Stop() {
+		Log.v("stationdetail","STOP playerservice." );
+
 		if (thisPlayerService != null) {
+			Log.v("stationdetail","STOP playerservice != null." );
+
 			try {
-				Button aButtonPlay = (Button) findViewById(R.id.detail_button_play);
-				aButtonPlay.setVisibility(View.VISIBLE);
-				Button aButtonStop = (Button) findViewById(R.id.detail_button_stop);
-				aButtonStop.setVisibility(View.GONE);
+				Button buttonPlay = (Button) findViewById(R.id.detail_button_play);
+				buttonPlay.setVisibility(View.VISIBLE);
+				Button buttonStop = (Button) findViewById(R.id.detail_button_stop);
+				buttonStop.setVisibility(View.GONE);
 				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
 			}
 		}
 	}
-
-	IPlayerService thisPlayerService;
+	
 	private ServiceConnection svcConn = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			Log.v("", "Service came online");
@@ -192,5 +213,6 @@ public class RadioStationDetailActivity extends Activity {
 			thisPlayerService = null;
 		}
 	};
+	
 
 }

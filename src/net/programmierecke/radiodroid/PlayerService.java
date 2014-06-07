@@ -98,6 +98,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 			thisApp.setLastStationStatus( "stop" );
 		}
 
+		/*
 		@Override
 		public String getCurrentStationID() throws RemoteException {
 			if (thisMediaPlayer == null)
@@ -106,16 +107,19 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				return null;
 			return playingStation.ID;
 		}
+		*/
 	};
 
 	@Override
 	public IBinder onBind(Intent arg0) {
+		Log.v("playerservice", "onBind");
 		return thisBinder;
 	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Log.v("playerservice", "onCreate");
 		thisContext = this;
 	}
 
@@ -144,6 +148,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 
 	@Override
 	public void onDestroy() {
+		Log.v("playerservice", "onDestroy");
 		Stop();
 		stopForeground(true);
 	}
