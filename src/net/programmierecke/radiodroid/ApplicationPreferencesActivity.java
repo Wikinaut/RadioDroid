@@ -1,5 +1,6 @@
 package net.programmierecke.radiodroid;
 
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
@@ -48,6 +49,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	private static final String ALL_STATIONS = "pref_key_all_stations";
 	private static final String SEARCH_STATIONS = "pref_key_search_stations";
 	private static final String ABOUT_APPLICATION = "pref_key_about_application";
+	private static final String NETWORK_SETTINGS = "pref_network_settings";
 
   @Override
   protected void onCreate( final Bundle savedInstanceState ) {
@@ -65,6 +67,9 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
     this.findPreference(ALL_STATIONS).setOnPreferenceClickListener(new StationListListener());
     this.findPreference(SEARCH_STATIONS).setOnPreferenceClickListener(new AboutApplicationListener());
     this.findPreference(ABOUT_APPLICATION).setOnPreferenceClickListener(new AboutApplicationListener());
+    this.findPreference(NETWORK_SETTINGS).setOnPreferenceChangeListener(new ListSummaryListener());
+
+    initializeListSummary((ListPreference) findPreference(NETWORK_SETTINGS));
 
   }
   
@@ -234,6 +239,37 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	        		((PreferenceScreen)preference).getDialog().getWindow().getDecorView().setBackgroundDrawable(this.getWindow().getDecorView().getBackground().getConstantState().newDrawable());
   	return false;
   }
+
+  
+  private void initializeListSummary(ListPreference pref) {
+	    pref.setSummary( String.format(
+	    	getString( R.string.preferences__network_settings_summary ),
+	    	pref.getEntry()
+	    	)
+	    );
+	  }
+
+  private class ListSummaryListener implements Preference.OnPreferenceChangeListener {
+	    @Override
+	    public boolean onPreferenceChange(Preference preference, Object value) {
+	    	ListPreference asList = (ListPreference) preference;
+
+	    	int index = 0;
+	    	for (; index < asList.getEntryValues().length; index++) {
+	    		if (value.equals(asList.getEntryValues()[index])) {
+	    			break;
+	    		}
+	    	}
+
+	    	asList.setSummary( String.format(
+		    		getString( R.string.preferences__network_settings_summary ),
+		    		asList.getEntries()[index]
+		    		)
+	    	);
+	    	
+	    	return true;
+	    }
+	  }
 
    
 }

@@ -71,6 +71,11 @@ public class MainActivity extends ListActivity {
 		}.execute();
 	}
 	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.v("mainactivity","onPause" );
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,7 @@ public class MainActivity extends ListActivity {
         // for all "false" defaultValues in preferences.xml 
 		prefs.edit().putBoolean("pref_toggle_allow_gprs_umts", prefs.getBoolean("pref_toggle_allow_gprs_umts", false)).commit();
 		prefs.edit().putBoolean("pref_toggle_notify_server_about_play_click", prefs.getBoolean("pref_toggle_notify_server_about_play_click", false)).commit();
+		prefs.edit().putBoolean("pref_toggle_always_refresh_station_lists", prefs.getBoolean("pref_toggle_always_refresh_station_lists", false)).commit();
 
 		/*
 		if ( !prefs.getBoolean( "pref_toggle_allow_gprs_umts", false )
@@ -135,12 +141,14 @@ public class MainActivity extends ListActivity {
 
 		if ( prefs.getBoolean( "pref_toggle_play_last_station_on_restart", true )
 				&& !lastStation.equals("") ) {
-				Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
+				// Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
 				ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
-		} else {
+		}
 
-		createStationList(Constants.TOP_CLICKS_URL);
-
+		if ( prefs.getBoolean( "pref_toggle_always_refresh_station_lists", true ) ) {
+			createStationList(Constants.TOP_CLICKS_URL);
+		}
+	
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		// registerForContextMenu(lv);
@@ -154,7 +162,6 @@ public class MainActivity extends ListActivity {
 			}
 		});
 
-		}
 	}
 
 	void ClickOnItem(RadioStation theStation) {
@@ -200,27 +207,23 @@ public class MainActivity extends ListActivity {
 
 		if (item.getItemId() == MENU_EXIT) {
 			Log.v(TAG, "menu : exit");
-			/*
 			try {
 				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);
 			}
-			*/
 			finish();
 		}
 
 		if (item.getItemId() == MENU_STOP) {
 			Log.v(TAG, "menu : stop");
-			/*
 			try {
 				thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);
 			}
-			*/
 			return true;
 		}
 

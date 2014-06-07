@@ -55,8 +55,11 @@
 
     <string name="preferences__play_last_station_on_restart_title">Auto-play last station</string>
     <string name="preferences__play_last_station_on_restart_summary">Whether the App shall automatically start playing the last selected station</string>
-    <string name="preferences__network_settings_summary">Whether the App may use mobile GPRS/UMTS connections - or WiFi/WLAN only</string>
- 
+
+    <string name="preferences__refresh_station_list_title">Always refresh lists</string>
+    <string name="preferences__refresh_station_list_summary">Whether always to refresh the station lists or only when the program starts</string>
+    
+    <string name="preferences__network_settings_summary">%s.\n\nWhether the App may use mobile GPRS/UMTS connections or WiFi/WLAN only.</string>
     <string name="preferences__network_settings">Network settings</string>
     <string name="preferences__wifi_only">WiFi/WLAN only</string>
     <string name="preferences__wifi_and_umts">WiFi/WLAN and GPRS/UMTS</string>
