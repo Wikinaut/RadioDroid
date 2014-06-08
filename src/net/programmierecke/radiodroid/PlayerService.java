@@ -12,6 +12,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
@@ -98,16 +99,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 			thisApp.setLastStationStatus( "stop" );
 		}
 
-		/*
-		@Override
-		public String getCurrentStationID() throws RemoteException {
-			if (thisMediaPlayer == null)
-				return null;
-			if (!thisMediaPlayer.isPlaying())
-				return null;
-			return playingStation.ID;
-		}
-		*/
 	};
 
 	@Override
@@ -274,4 +265,16 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
         }
 		SendMessage(playingStation.Name, "Buffering ..", "Buffering .. (" + percent + "%)");
 	}
+	
+	public void unbindSafely(Context appContext, ServiceConnection connection) {
+	    try {
+	        appContext.unbindService(connection);
+	    } catch (Exception e) {
+	        // We were unable to unbind, e.g. because no such service binding
+	        // exists. This should be rare, but is possible, e.g. if the
+	        // service was killed by Android in the meantime.
+	        // We ignore this.
+	    }
+	}
+	 
 }

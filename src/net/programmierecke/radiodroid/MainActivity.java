@@ -27,13 +27,14 @@ import net.programmierecke.radiodroid.Constants;
 
 public class MainActivity extends ListActivity {
 
-	IPlayerService thisPlayerService;
+	/* IPlayerService thisPlayerService; */
 
 	ProgressDialog thisProgressLoading;
 	RadioStationList thisArrayAdapter = null;
 
 	private static final String TAG = "RadioDroid";
 
+	/*
 	private ServiceConnection svcConn = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			thisPlayerService = IPlayerService.Stub.asInterface(binder);
@@ -43,7 +44,8 @@ public class MainActivity extends ListActivity {
 			thisPlayerService = null;
 		}
 	};
-
+	*/
+	
 	private void createStationList(final String theURL) {
 		thisProgressLoading = ProgressDialog.show(
 			MainActivity.this,
@@ -84,7 +86,7 @@ public class MainActivity extends ListActivity {
 
 		Intent playerServiceIntent = new Intent(getBaseContext(), PlayerService.class);
 		startService(playerServiceIntent);
-		bindService(playerServiceIntent, svcConn, BIND_AUTO_CREATE);
+		bindService(playerServiceIntent, RadioDroid.svcConn, BIND_AUTO_CREATE);
 		
 		// gui stuff
 		thisArrayAdapter = new RadioStationList(this, R.layout.station_list);
@@ -97,6 +99,7 @@ public class MainActivity extends ListActivity {
         // Android bug workaround
         // https://code.google.com/p/android/issues/detail?id=6641
         // for all "false" defaultValues in preferences.xml 
+		prefs.edit().putBoolean("pref_toggle_play_last_station_on_restart", prefs.getBoolean("pref_toggle_play_last_station_on_restart", false)).commit();
 		prefs.edit().putBoolean("pref_toggle_allow_gprs_umts", prefs.getBoolean("pref_toggle_allow_gprs_umts", false)).commit();
 		prefs.edit().putBoolean("pref_toggle_notify_server_about_play_click", prefs.getBoolean("pref_toggle_notify_server_about_play_click", false)).commit();
 		prefs.edit().putBoolean("pref_toggle_always_refresh_station_lists", prefs.getBoolean("pref_toggle_always_refresh_station_lists", false)).commit();
@@ -139,16 +142,18 @@ public class MainActivity extends ListActivity {
 		
 		setTitle( Utils.getAppAndVersionName( this ) + " (" + getString(R.string.top_clicks) + ")" );
 
+
 		if ( prefs.getBoolean( "pref_toggle_play_last_station_on_restart", true )
 				&& !lastStation.equals("") ) {
-				// Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
-				ClickOnItem((RadioStation) thisApp.getRadioStationPersistentStorage() );
+			Toast.makeText(this, "Last played stream was: " + lastStation, Toast.LENGTH_LONG).show();
+			Log.v("mainactivity","here1" );
+			ClickOnItem( (RadioStation) thisApp.getRadioStationPersistentStorage() );
 		}
 
-		if ( prefs.getBoolean( "pref_toggle_always_refresh_station_lists", true ) ) {
+		if ( true /* prefs.getBoolean( "pref_toggle_always_refresh_station_lists", true ) */ ) {
 			createStationList(Constants.TOP_CLICKS_URL);
 		}
-	
+
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		// registerForContextMenu(lv);
@@ -157,18 +162,24 @@ public class MainActivity extends ListActivity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object anObject = parent.getItemAtPosition(position);
 				if (anObject instanceof RadioStation) {
-					ClickOnItem((RadioStation) anObject);
+					ClickOnItem( (RadioStation) anObject);
 				}
 			}
 		});
-
+		
 	}
 
-	void ClickOnItem(RadioStation theStation) {
+	void ClickOnItem( RadioStation theStation) {
 
-		Intent anIntent = new Intent( getBaseContext(), RadioStationDetailActivity.class);
+		Log.v("mainactivity","here2" );
+		// unbindService( svcConn );
+		PlayerService thisService = new PlayerService();
+		thisService.unbindSafely( this, RadioDroid.svcConn );
+
+		Intent anIntent = new Intent( this, RadioStationDetailActivity.class);
 		anIntent.putExtra("stationid", theStation.ID);
 		startActivity(anIntent);
+		
 	}
 
 	final int MENU_EXIT = 0;
@@ -208,7 +219,7 @@ public class MainActivity extends ListActivity {
 		if (item.getItemId() == MENU_EXIT) {
 			Log.v(TAG, "menu : exit");
 			try {
-				thisPlayerService.Stop();
+				RadioDroid.thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);
@@ -219,7 +230,7 @@ public class MainActivity extends ListActivity {
 		if (item.getItemId() == MENU_STOP) {
 			Log.v(TAG, "menu : stop");
 			try {
-				thisPlayerService.Stop();
+				RadioDroid.thisPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);

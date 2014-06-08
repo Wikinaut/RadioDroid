@@ -4,13 +4,30 @@ import com.google.gson.Gson;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.IBinder;
 import android.util.Log;
 
 public class RadioDroid extends Application {
 
 	public RadioDroid() {
 	}
+
+	static IPlayerService thisPlayerService;
+
+	public static ServiceConnection svcConn = new ServiceConnection() {
+		public void onServiceConnected(ComponentName className, IBinder binder) {
+			thisPlayerService = IPlayerService.Stub.asInterface(binder);
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			thisPlayerService = null;
+		}
+	};
+
 
 	public boolean isPlayingSameLastStationUrl(String stationUrl) {
 

@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 public class RadioStationDetailActivity extends Activity {
 
 	IPlayerService thisPlayerService;
@@ -34,9 +33,10 @@ public class RadioStationDetailActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		Log.v("stationdetail","onPause" );
-		if ( svcConn != null ) {
-			unbindService( svcConn );
-		}
+		Log.v("stationdetail","unbind" );
+		// unbindService( svcConn );
+		PlayerService thisService = new PlayerService();
+		thisService.unbindSafely( this, svcConn );
 	}
 	
 	@Override
