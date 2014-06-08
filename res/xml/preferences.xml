@@ -5,23 +5,24 @@
     
 	<PreferenceCategory android:key="pref_key_settings" android:title="@string/preferences__settings_category_title">
     
-	    <CheckBoxPreference android:defaultValue="false"
-                            android:key="pref_toggle_play_last_station_on_restart"
-                            android:title="@string/preferences__play_last_station_on_restart_title"
-                            android:summary="@string/preferences__play_last_station_on_restart_summary"/>
-
+   		<ListPreference android:key="pref_autoplay_settings"
+                        android:defaultValue="autoplay_last_status"
+                        android:title="@string/preferences__autoplay_settings_title"
+                        android:dialogTitle="@string/preferences__autoplay_settings_summary"
+                        android:entries="@array/pref_autoplay_entries"
+                        android:entryValues="@array/pref_autoplay_values"/>
+	    
 	    <CheckBoxPreference android:defaultValue="true"
                             android:key="pref_toggle_always_refresh_station_lists"
                             android:title="@string/preferences__refresh_station_list_title"
                             android:summary="@string/preferences__refresh_station_list_summary"/>
-	    	    	    
-   		<ListPreference
-                          android:key="pref_network_settings"
-                          android:defaultValue="wifionly"
-                          android:title="@string/preferences__network_settings"
-                          android:summary="@string/preferences__network_settings_summary"
-                          android:entries="@array/pref_network_entries"
-                          android:entryValues="@array/pref_network_values"/>
+
+	    <ListPreference android:key="pref_network_settings"
+                        android:defaultValue="wifionly"
+                        android:title="@string/preferences__network_settings_title"
+                        android:dialogTitle="@string/preferences__network_settings_summary"
+                        android:entries="@array/pref_network_entries"
+                        android:entryValues="@array/pref_network_values"/>
         
      </PreferenceCategory>
         	    

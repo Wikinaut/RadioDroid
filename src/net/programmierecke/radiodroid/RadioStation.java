@@ -7,18 +7,20 @@ import android.text.TextUtils;
 
 public class RadioStation {
 
-	public String ID="";
-	public String Name="";
-	public String StreamUrl="";
-	public String Status="";
-	public String HomePageUrl="";
-	public String IconUrl="";
-	public String Country="";
-	public String SubCountry="";
-	public String TagsAll="";
-	public String Language="";
-	public int Votes=0;
-	public int NegativeVotes=0;
+	public String id="";
+	public String name="";
+	public String streamUrl="";
+	public String playStatus="";
+	public String homePageUrl="";
+	public String iconUrl="";
+	public String country="";
+	public String subCountry="";
+	public String tagsAll="";
+	public String language="";
+	public int votes=0;
+	public int negativeVotes=0;
+	public boolean detailedViewSeen=false;
+
 
 	public RadioStation() {
 	}
@@ -26,16 +28,16 @@ public class RadioStation {
 	public String stationDetailsShortString() {
 		List<String> aList = new ArrayList<String>();
 
-		if ( !Country.isEmpty() ) {
-			aList.add( Country );
+		if ( !country.isEmpty() ) {
+			aList.add( country );
 		}
 		
-		if ( !Language.isEmpty() ) {
-			aList.add(Language);
+		if ( !language.isEmpty() ) {
+			aList.add(language);
 		}
 	
-		if ( !TagsAll.isEmpty() ) {
-			aList.add(TagsAll);
+		if ( !tagsAll.isEmpty() ) {
+			aList.add(tagsAll);
 		}
 		
 		return TextUtils.join(", ", aList);

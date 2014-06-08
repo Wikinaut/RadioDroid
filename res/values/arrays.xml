@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    
+  <string-array name="pref_autoplay_entries">
+    <item>@string/preferences__autoplay_play</item>
+    <item>@string/preferences__autoplay_last_status</item>
+    <item>@string/preferences__autoplay_pause</item>
+    <item>@string/preferences__autoplay_none</item>
+  </string-array>
+  
+  <string-array name="pref_autoplay_values" translatable="false">
+    <item>autoplay_play</item>
+    <item>autoplay_last_status</item>
+    <item>autoplay_pause</item>
+    <item>autoplay_none</item>
+  </string-array>
+    
   <string-array name="pref_network_entries">
     <item>@string/preferences__wifi_only</item>
     <item>@string/preferences__wifi_and_umts</item>
@@ -12,5 +26,5 @@
     <item>wifiandumts</item>
     <item>umtsonly</item>
   </string-array>
-  
+    
 </resources>

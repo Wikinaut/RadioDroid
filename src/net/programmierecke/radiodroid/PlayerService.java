@@ -38,7 +38,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 					thisContext,
 					Html.fromHtml( String.format(
 							getString(R.string.notify_server_about_play_click),
-							playingStation.ID)
+							playingStation.id)
 					),
 					Toast.LENGTH_LONG ).show();
 	    }
@@ -60,10 +60,10 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	final String TAG = "PlayerService";
 	private RadioStation playingStation;
 
-	MediaPlayer thisMediaPlayer = null;
+	MediaPlayer thisPlayer = null;
 	Context thisContext;
 
-	private final IPlayerService.Stub thisBinder = new IPlayerService.Stub() {
+	private final IPlayerService.Stub playerServiceBinder = new IPlayerService.Stub() {
 
 		public void Play( String theJsonRadioStation) throws RemoteException {
 			RadioDroid thisApp = (RadioDroid) getApplication();
@@ -71,31 +71,31 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 			Gson gson = new Gson();
 			playingStation = gson.fromJson( theJsonRadioStation, RadioStation.class );
 			
-			if ( !thisApp.isPlayingSameLastStationUrl( playingStation.StreamUrl ) ) {
-				PlayerService.this.Stop();
-				PlayerService.this.PlayUrl( playingStation );
+			if ( !thisApp.isPlayingSameLastStationUrl( playingStation.streamUrl ) ) {
+				PlayerService.this.stop();
+				PlayerService.this.playUrl( playingStation );
 
- 				if	( !thisApp.isSameLastStationUrl( playingStation.StreamUrl ) ) {
+ 				if	( !thisApp.isSameLastStationUrl( playingStation.streamUrl ) ) {
 
 					PreferenceManager.setDefaultValues(thisContext, R.xml.preferences, false);
 					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(thisContext);
 
 					if (settings.getBoolean( "pref_toggle_notify_server_about_play_click", false ) ) {
 						BackgroundTask serverCountTask = new BackgroundTask();
-				   		serverCountTask.execute( "http://www.radio-browser.info/?action=clicked&id=" + playingStation.ID );
+				   		serverCountTask.execute( "http://www.radio-browser.info/?action=clicked&id=" + playingStation.id );
 					}
 				}
 					
 			}
 	
-			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
 			thisApp.setLastStationStatus( "play" );
-
+			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
+	
 		}
 
 		public void Stop() throws RemoteException {
 			RadioDroid thisApp = (RadioDroid) getApplication();
-			PlayerService.this.Stop();
+			PlayerService.this.stop();
 			thisApp.setLastStationStatus( "stop" );
 		}
 
@@ -104,7 +104,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	@Override
 	public IBinder onBind(Intent arg0) {
 		Log.v("playerservice", "onBind");
-		return thisBinder;
+		return playerServiceBinder;
 	}
 
 	@Override
@@ -114,25 +114,25 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		thisContext = this;
 	}
 
-	public void SendMessage(String theTitle, String theMessage, String theTicker) {
+	public void showNotificationMessage(String theTitle, String theMessage, String theTicker) {
 		
 		Intent notificationIntent = new Intent(thisContext, RadioStationDetailActivity.class);
-		notificationIntent.putExtra("stationid", playingStation.ID);
+		notificationIntent.putExtra("stationid", playingStation.id);
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent contentIntent = PendingIntent.getActivity(thisContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		Notification thisNotification = new NotificationCompat
-				.Builder(thisContext).setContentIntent(contentIntent).setContentTitle(theTitle)
+				.Builder(thisContext)
+					.setContentIntent(contentIntent).setContentTitle(theTitle)
 				.setContentText(theMessage)
 				.setWhen(System.currentTimeMillis())
 				.setTicker(theTicker)
 				.setOngoing(true)
 				.setUsesChronometer(true)
 				.setSmallIcon(R.drawable.play)
-				.setLargeIcon( (
-							(BitmapDrawable) getResources().getDrawable(R.drawable.ic_launcher)
-						).getBitmap()
-				).build();
+				.setLargeIcon(
+						((BitmapDrawable) getResources().getDrawable(R.drawable.ic_launcher)).getBitmap()
+					).build();
 
 		startForeground(NOTIFY_ID, thisNotification);
 	}
@@ -140,53 +140,53 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	@Override
 	public void onDestroy() {
 		Log.v("playerservice", "onDestroy");
-		Stop();
+		stop();
 		stopForeground(true);
 	}
 
-	public void PlayUrl( RadioStation thisStation ) {
-		final String thisStationName = thisStation.Name;
-		final String thisStationStreamUrl = thisStation.StreamUrl;
+	public void playUrl( RadioStation thisStation ) {
+		final String thisStationName = thisStation.name;
+		final String thisStationStreamUrl = thisStation.streamUrl;
 		
 		new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... stations) {
 
-				if (thisMediaPlayer == null) {
-					thisMediaPlayer = new MediaPlayer();
-					thisMediaPlayer.setOnBufferingUpdateListener(PlayerService.this);
+				if (thisPlayer == null) {
+					thisPlayer = new MediaPlayer();
+					thisPlayer.setOnBufferingUpdateListener(PlayerService.this);
 				}
 
 				String decodedUrl = decodeUrl(thisStationStreamUrl);
 
 				RadioDroid thisApp = (RadioDroid) getApplication();
 				
-				if ( thisMediaPlayer.isPlaying()
+				if ( thisPlayer.isPlaying()
 					&& !thisApp.isPlayingSameLastStationUrl(thisStationStreamUrl) ) {
-					thisMediaPlayer.stop();
-					thisMediaPlayer.reset();
+					thisPlayer.stop();
+					thisPlayer.reset();
 				}
 
 				try {
-					SendMessage(thisStationName, "Preparing stream", "Preparing stream");
-					thisMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-					thisMediaPlayer.setDataSource(decodedUrl);
-					thisMediaPlayer.prepare();
+					showNotificationMessage(thisStationName, "Preparing stream", "Preparing stream");
+					thisPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+					thisPlayer.setDataSource(decodedUrl);
+					thisPlayer.prepare();
 					Log.d(TAG, "Start playing "+thisStationStreamUrl);
-					SendMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
-					thisMediaPlayer.start();
+					showNotificationMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
+					thisPlayer.start();
 				} catch (IllegalArgumentException e) {
 					Log.e(TAG, "" + e);
-					SendMessage(thisStationName, "Stream url problem", "Stream url problem");
-					Stop();
+					showNotificationMessage(thisStationName, "Stream url problem", "Stream url problem");
+					stop();
 				} catch (IOException e) {
 					Log.e(TAG, "" + e);
-					SendMessage(thisStationName, "Stream caching problem", "Stream caching problem");
-					Stop();
+					showNotificationMessage(thisStationName, "Stream caching problem", "Stream caching problem");
+					stop();
 				} catch (Exception e) {
 					Log.e(TAG, "" + e);
-					SendMessage(thisStationName, "Unable to play stream", "Unable to play stream");
-					Stop();
+					showNotificationMessage(thisStationName, "Unable to play stream", "Unable to play stream");
+					stop();
 				}
 				return null;
 			}
@@ -200,15 +200,15 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		}.execute();
 	}
 
-	public void Stop() {
+	public void stop() {
 		RadioDroid thisApp = (RadioDroid) getApplication();
 		thisApp.setLastStationStatus( "stop" );
-		if (thisMediaPlayer != null) {
-			if (thisMediaPlayer.isPlaying()) {
-				thisMediaPlayer.stop();
+		if (thisPlayer != null) {
+			if (thisPlayer.isPlaying()) {
+				thisPlayer.stop();
 			}
-			thisMediaPlayer.release();
-			thisMediaPlayer = null;
+			thisPlayer.release();
+			thisPlayer = null;
 		}
 		stopForeground(true);
 	}
@@ -263,7 +263,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		if (percent < 0 || percent > 100) {
             percent = (int) Math.round((((Math.abs(percent)-1)*100.0/Integer.MAX_VALUE)));
         }
-		SendMessage(playingStation.Name, "Buffering ..", "Buffering .. (" + percent + "%)");
+		showNotificationMessage(playingStation.name, "Buffering ..", "Buffering .. (" + percent + "%)");
 	}
 	
 	public void unbindSafely(Context appContext, ServiceConnection connection) {

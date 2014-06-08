@@ -13,7 +13,7 @@
     <string name="detail_exit">EXIT</string>
     
     <!-- Option menu items -->
-    <string name="exit_app">exit %1$s</string>
+    <string name="exit_app">stop &amp; exit %1$s</string>
     <string name="stop_playing">stop playing</string>
     <string name="top_votes">top votes</string>
     <string name="top_clicks">top clicks</string>
@@ -53,14 +53,18 @@
     <!--  Application preferences activity -->
     <string name="preferences__settings_category_title">Settings</string>
 
-    <string name="preferences__play_last_station_on_restart_title">Auto-play last station</string>
-    <string name="preferences__play_last_station_on_restart_summary">Whether the App shall automatically start playing the last selected station</string>
-
-    <string name="preferences__refresh_station_list_title">Always refresh lists</string>
-    <string name="preferences__refresh_station_list_summary">Whether always to refresh the station lists or only when the program starts</string>
+    <string name="preferences__autoplay_settings_title">Last station on start &#8230;</string>
+    <string name="preferences__autoplay_settings_summary">When the App is started, the last station is &#8230;</string>
+    <string name="preferences__autoplay_play">played</string>
+    <string name="preferences__autoplay_last_status">played or paused (last mode)</string>
+    <string name="preferences__autoplay_pause">paused</string>
+    <string name="preferences__autoplay_none">(station list is shown)</string>
     
-    <string name="preferences__network_settings_summary">%s.\n\nWhether the App may use mobile GPRS/UMTS connections or WiFi/WLAN only.</string>
-    <string name="preferences__network_settings">Network settings</string>
+    <string name="preferences__refresh_station_list_title">Always refresh lists</string>
+    <string name="preferences__refresh_station_list_summary">Whether station lists are updated on every view or only when the App is started (may be costly)</string>
+    
+    <string name="preferences__network_settings_title">Network settings</string>
+    <string name="preferences__network_settings_summary">Allow or deny mobile connections</string>
     <string name="preferences__wifi_only">WiFi/WLAN only</string>
     <string name="preferences__wifi_and_umts">WiFi/WLAN and GPRS/UMTS</string>
     <string name="preferences__umts_only">GPRS/UMTS only</string>
@@ -81,7 +85,7 @@
     <string name="preferences__about_application_category_title">About</string>
     <string name="preferences__version">Version</string>
                 
-    <string name="loading_station_details_from_server">Loading the station details from the server</string>
-    <string name="loading_station_list_from_server">Loading the station list from the server</string>
+    <string name="loading_station_details_from_server">Loading station details from the server</string>
+    <string name="loading_station_list_from_server">Updating the station list from the server</string>
     
 </resources>

@@ -13,6 +13,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,17 +32,6 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 
 	ProgressDialog thisProgressLoading;
 	RadioStationList thisArrayAdapter = null;
-	IPlayerService thisPlayerService;
-	
-	private ServiceConnection svcConn = new ServiceConnection() {
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			thisPlayerService = IPlayerService.Stub.asInterface(binder);
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			thisPlayerService = null;
-		}
-	};
 
 	private static final String STOP_PLAYING = "pref_key_stop_playing";
 	private static final String TOP_VOTES = "pref_key_top_votes";
@@ -49,15 +39,22 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	private static final String ALL_STATIONS = "pref_key_all_stations";
 	private static final String SEARCH_STATIONS = "pref_key_search_stations";
 	private static final String ABOUT_APPLICATION = "pref_key_about_application";
+	private static final String AUTOPLAY_SETTINGS = "pref_autoplay_settings";
 	private static final String NETWORK_SETTINGS = "pref_network_settings";
 
-  @Override
-  protected void onCreate( final Bundle savedInstanceState ) {
-    super.onCreate( savedInstanceState );
 
-	Intent anIntent = new Intent(this, PlayerService.class);
-	bindService(anIntent, svcConn, BIND_AUTO_CREATE);
-	startService(anIntent);
+	@Override
+	protected void onPause() {
+		super.onPause();
+		PlayerService thisService = new PlayerService();
+		thisService.unbindSafely( this, RadioDroid.globalPlayerServiceConnector );
+	}
+	
+    @Override
+    protected void onCreate( final Bundle savedInstanceState ) {
+	    super.onCreate( savedInstanceState );
+
+	setTitle( Utils.getAppAndVersionName( this ) );
 
     addPreferencesFromResource(R.xml.preferences);
 
@@ -67,8 +64,10 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
     this.findPreference(ALL_STATIONS).setOnPreferenceClickListener(new StationListListener());
     this.findPreference(SEARCH_STATIONS).setOnPreferenceClickListener(new AboutApplicationListener());
     this.findPreference(ABOUT_APPLICATION).setOnPreferenceClickListener(new AboutApplicationListener());
+    this.findPreference(AUTOPLAY_SETTINGS).setOnPreferenceChangeListener(new ListSummaryListener());
     this.findPreference(NETWORK_SETTINGS).setOnPreferenceChangeListener(new ListSummaryListener());
 
+    initializeListSummary((ListPreference) findPreference(AUTOPLAY_SETTINGS));
     initializeListSummary((ListPreference) findPreference(NETWORK_SETTINGS));
 
   }
@@ -103,7 +102,11 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 
 		if (item.getItemId() == MENU_STOP) {
 			try {
-				thisPlayerService.Stop();
+				Intent anIntent = new Intent(this, PlayerService.class);
+				bindService(anIntent, RadioDroid.globalPlayerServiceConnector, BIND_AUTO_CREATE);
+				startService(anIntent);
+
+				RadioDroid.globalPlayerService.Stop();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 			}
@@ -174,8 +177,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 		Context context = ApplicationPreferencesActivity.this;
 	    setTitle( Utils.getAppAndVersionName( context ) + " (" + getString(R.string.top_clicks) + ")" );
 	      
-	    thisArrayAdapter = new RadioStationList(context, R.layout.station_list);
-	    setListAdapter(thisArrayAdapter);
+	    setListAdapter(RadioDroid.globalRadioStationList);
 	    
 	    String prefKey = preference.getKey();
 	    
@@ -210,7 +212,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 
 	void ClickOnItem(RadioStation theStation) {
 		Intent anIntent = new Intent(getBaseContext(), RadioStationDetailActivity.class);
-		anIntent.putExtra("stationid", theStation.ID);
+		anIntent.putExtra("stationid", theStation.id);
 		startActivity(anIntent);
 	}
 
@@ -242,11 +244,15 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 
   
   private void initializeListSummary(ListPreference pref) {
-	    pref.setSummary( String.format(
+	    /*
+	  	pref.setSummary( String.format(
 	    	getString( R.string.preferences__network_settings_summary ),
 	    	pref.getEntry()
 	    	)
 	    );
+	    */
+	  	pref.setSummary( pref.getEntry() );
+	  
 	  }
 
   private class ListSummaryListener implements Preference.OnPreferenceChangeListener {
@@ -261,11 +267,14 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	    		}
 	    	}
 
+	    	/*
 	    	asList.setSummary( String.format(
 		    		getString( R.string.preferences__network_settings_summary ),
 		    		asList.getEntries()[index]
 		    		)
 	    	);
+	    	*/
+	    	asList.setSummary( asList.getEntries()[index] );
 	    	
 	    	return true;
 	    }

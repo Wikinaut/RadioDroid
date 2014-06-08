@@ -45,7 +45,7 @@ public class Utils {
 
 					RadioStation aStation = new RadioStation();
 
-					aStation.StreamUrl = html(streamUrl);
+					aStation.streamUrl = html(streamUrl);
 					
 					String country = html(o.getString("country"));
 					country = country.replace("United States of America", "USA");
@@ -63,14 +63,14 @@ public class Utils {
 						}
 					
 					}
-					aStation.Country = country;
-					aStation.SubCountry = subCountry;
+					aStation.country = country;
+					aStation.subCountry = subCountry;
 					
-					aStation.ID = html(o.getString("id"));
-					aStation.Name = html(o.getString("name"));
-					aStation.Votes = o.getInt("votes");
-					aStation.NegativeVotes = o.getInt("negativevotes");
-					aStation.HomePageUrl = html(o.getString("homepage"));
+					aStation.id = html(o.getString("id"));
+					aStation.name = html(o.getString("name"));
+					aStation.votes = o.getInt("votes");
+					aStation.negativeVotes = o.getInt("negativevotes");
+					aStation.homePageUrl = html(o.getString("homepage"));
 
 					String tags = html(o.getString("tags"));
 					if ( !tags.isEmpty() ) {
@@ -80,13 +80,13 @@ public class Utils {
 								aTags.add(part.trim());
 							}
 						}
-						aStation.TagsAll = TextUtils.join(", ", aTags);
+						aStation.tagsAll = TextUtils.join(", ", aTags);
 					}					
 
 					String favicon = o.getString("favicon"); 
-					aStation.IconUrl = favicon.isEmpty() ? "" : favicon;
+					aStation.iconUrl = favicon.isEmpty() ? "" : favicon;
 
-					aStation.Language = html(o.getString("language"));
+					aStation.language = html(o.getString("language"));
 				
 					aList.add(aStation);
 				}

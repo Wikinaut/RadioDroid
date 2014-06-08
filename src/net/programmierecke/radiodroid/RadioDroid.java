@@ -16,15 +16,16 @@ public class RadioDroid extends Application {
 	public RadioDroid() {
 	}
 
-	static IPlayerService thisPlayerService;
+	public static IPlayerService globalPlayerService;
+	public static RadioStationList globalRadioStationList;
 
-	public static ServiceConnection svcConn = new ServiceConnection() {
+	public static ServiceConnection globalPlayerServiceConnector = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
-			thisPlayerService = IPlayerService.Stub.asInterface(binder);
+			globalPlayerService = IPlayerService.Stub.asInterface(binder);
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			thisPlayerService = null;
+			globalPlayerService = null;
 		}
 	};
 
@@ -35,8 +36,8 @@ public class RadioDroid extends Application {
 		
 		if (lastStation != null) {
 
-			boolean isSameStation = ( lastStation.StreamUrl != null ) && stationUrl.equals(lastStation.StreamUrl);
-			boolean isPlaying = ( lastStation.Status.equals("play") );
+			boolean isSameStation = ( lastStation.streamUrl != null ) && stationUrl.equals(lastStation.streamUrl);
+			boolean isPlaying = ( lastStation.playStatus.equals("play") );
 			return isSameStation && isPlaying; 
 			
 		} else {
@@ -49,36 +50,50 @@ public class RadioDroid extends Application {
 		RadioStation lastStation = getRadioStationPersistentStorage();
 		
 		if (lastStation != null) {
-			return (lastStation.StreamUrl != null) && stationUrl.equals(lastStation.StreamUrl);
+			return (lastStation.streamUrl != null) && stationUrl.equals(lastStation.streamUrl);
 		} else {
 			return false;
 		}
 	}
 	
 
+	public void setLastStationDetailedViewSeen() {
+
+		RadioStation lastStation = getRadioStationPersistentStorage();
+		lastStation.detailedViewSeen = true;
+		putRadioStationPersistentStorage( lastStation );		    
+	}
+
+	public boolean getLastStationDetailedViewSeen() {
+
+		RadioStation lastStation = getRadioStationPersistentStorage();
+		return (lastStation != null ) ? lastStation.detailedViewSeen : false; 		    
+	}
+
 	public void setLastStationStatus(String status) {
 
 		RadioStation lastStation = getRadioStationPersistentStorage();
-		lastStation.Status = status;
+		lastStation.playStatus = status;
 		putRadioStationPersistentStorage( lastStation );		    
 	}
+	
 
 	public String getLastStationStatus() {
 
 		RadioStation lastStation = getRadioStationPersistentStorage();
-		return (lastStation != null) ? lastStation.Status : "";
+		return (lastStation != null) ? lastStation.playStatus : "";
 	}
 
 	public void setLastStationStreamUrl(String stationUrl) {
 		RadioStation lastStation = getRadioStationPersistentStorage();
-		lastStation.StreamUrl = stationUrl;
+		lastStation.streamUrl = stationUrl;
 		putRadioStationPersistentStorage( lastStation );		    
 	}
 
 	public String getLastStationStreamUrl() {
 
 		RadioStation lastStation = getRadioStationPersistentStorage();
-		return (lastStation != null) ? lastStation.StreamUrl : "";
+		return (lastStation != null) ? lastStation.streamUrl : "";
 
 	}
 

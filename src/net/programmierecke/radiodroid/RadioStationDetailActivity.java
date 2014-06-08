@@ -9,11 +9,13 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,27 +25,38 @@ import android.widget.TextView;
 
 public class RadioStationDetailActivity extends Activity {
 
-	IPlayerService thisPlayerService;
-	
 	ProgressDialog thisProgressLoading;
 	RadioStation thisStation;
-	RadioStation lastStation;
+	RadioStation lastRadioStation;
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.v("stationdetail","onPause" );
-		Log.v("stationdetail","unbind" );
-		// unbindService( svcConn );
+		Log.v("stationdetail","onpause");
 		PlayerService thisService = new PlayerService();
-		thisService.unbindSafely( this, svcConn );
+		thisService.unbindSafely( this, RadioDroid.globalPlayerServiceConnector );
+
+		RadioDroid thisApp = (RadioDroid) getApplication(); 
+		thisApp.setLastStationDetailedViewSeen();
+
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.v("stationdetail","onCreate" );
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.v("stationdetail","onResume" );
 		
+		RadioDroid thisApp = (RadioDroid) getApplication(); 
+		// thisApp.setLastStationDetailedViewSeen();
+		// Log.v("stationdetail","onresume:detailedviewseen:"+(thisApp.getLastStationDetailedViewSeen()?"1":"0") );
+		lastRadioStation = thisApp.getRadioStationPersistentStorage();
+
 		setContentView(R.layout.station_detail);
 
 		Bundle anExtras = getIntent().getExtras();
@@ -51,14 +64,11 @@ public class RadioStationDetailActivity extends Activity {
 
 		Intent playerServiceIntent = new Intent( getBaseContext(), PlayerService.class);
 		startService(playerServiceIntent);
-		bindService(playerServiceIntent, svcConn, BIND_AUTO_CREATE);
-		
-		RadioDroid thisApp = (RadioDroid) getApplication(); 
-		lastStation = thisApp.getRadioStationPersistentStorage();
-		
-		if ( aStationID.equals(lastStation.ID) ) {
+		bindService(playerServiceIntent, RadioDroid.globalPlayerServiceConnector, BIND_AUTO_CREATE);
+	
+		if ( aStationID.equals(lastRadioStation.id) ) {
 
-			createStationDetailView(lastStation);
+			createStationDetailView(lastRadioStation);
 
 			new AsyncTask<Void, Void, Void>() {
 
@@ -70,7 +80,22 @@ public class RadioStationDetailActivity extends Activity {
 				@Override
 				protected void onPostExecute(Void result) {
 					if (!isFinishing()) {
-						Play();
+
+						RadioDroid thisApp = (RadioDroid) getApplication(); 
+						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(thisApp);
+						String autoPlayPreferenceValue = prefs.getString("pref_autoplay_settings", "(undefined)" );
+
+						if ( autoPlayPreferenceValue.equals( "autoplay_play" ) ) {
+							Play();
+						} else if ( autoPlayPreferenceValue.equals( "autoplay_pause" ) ) {
+							Stop();
+						} else if ( autoPlayPreferenceValue.equals( "autoplay_last_status" ) ) {
+							if ( thisApp.getLastStationStatus().equals( "play" ) ) {
+								Play();
+							} else {
+								Stop();
+							}
+						}
 					}
 				}
 
@@ -109,34 +134,38 @@ public class RadioStationDetailActivity extends Activity {
 		}.execute();
 		
 		}
+		
 	}
 
 	private void createStationDetailView(RadioStation radioStation) {
 		thisStation = radioStation;
-		
-		setTitle(radioStation.Name);
+
+		// RadioDroid thisApp = (RadioDroid) getApplication();
+		// thisApp.setLastStationDetailedViewSeen();
+
+		setTitle(radioStation.name);
 		
 		TextView aTextViewId = (TextView) findViewById(R.id.stationdetail_id_value);
-		String positiveVotes = (radioStation.Votes > 0) ? "+" + radioStation.Votes : "0";
-		String negativeVotes = (radioStation.NegativeVotes > 0) ? "-" + radioStation.NegativeVotes : "0";
-		aTextViewId.setText( radioStation.ID + " (" + positiveVotes + "/" + negativeVotes + ")" );
+		String positiveVotes = (radioStation.votes > 0) ? "+" + radioStation.votes : "0";
+		String negativeVotes = (radioStation.negativeVotes > 0) ? "-" + radioStation.negativeVotes : "0";
+		aTextViewId.setText( radioStation.id + " (" + positiveVotes + "/" + negativeVotes + ")" );
 
 		TextView aTextViewCountry = (TextView) findViewById(R.id.stationdetail_country_value);
-		aTextViewCountry.setText(radioStation.Country);
+		aTextViewCountry.setText(radioStation.country);
 
 		TextView aTextViewLanguage = (TextView) findViewById(R.id.stationdetail_language_value);
-		aTextViewLanguage.setText(radioStation.Language);
+		aTextViewLanguage.setText(radioStation.language);
 
 		TextView aTextViewTags = (TextView) findViewById(R.id.stationdetail_tags_value);
-		aTextViewTags.setText(radioStation.TagsAll);
+		aTextViewTags.setText(radioStation.tagsAll);
 
 		TextView aTextViewHompageUrl = (TextView) findViewById(R.id.stationdetail_homepage_url_value);
-		aTextViewHompageUrl.setText(radioStation.HomePageUrl);
+		aTextViewHompageUrl.setText(radioStation.homePageUrl);
 
 		TextView aTextViewStream = (TextView) findViewById(R.id.detail_stream_url_value);
-		aTextViewStream.setText(radioStation.StreamUrl);
+		aTextViewStream.setText(radioStation.streamUrl);
 
-		final String aLink = thisStation.HomePageUrl;
+		final String aLink = thisStation.homePageUrl;
 		LinearLayout aLinLayoutHompageUrl = (LinearLayout) findViewById(R.id.stationdetail_homepage_url_clickable);
 		aLinLayoutHompageUrl.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -165,11 +194,11 @@ public class RadioStationDetailActivity extends Activity {
 
 	private void Play() {
 		Log.v("stationdetail", "play");
-		if ( thisPlayerService == null ) {
+		if ( RadioDroid.globalPlayerService == null ) {
 			Log.v("stationdetail","PLAY playerservice is null." );
 		}
 
-		if ( thisPlayerService != null ) {
+		if ( RadioDroid.globalPlayerService != null ) {
 			Log.v("stationdetail","PLAY playerservice != null." );
 			try {
 				Button aButtonPlay = (Button) findViewById(R.id.detail_button_play);
@@ -177,7 +206,7 @@ public class RadioStationDetailActivity extends Activity {
 				Button aButtonStop = (Button) findViewById(R.id.detail_button_stop);
 				aButtonStop.setVisibility(View.VISIBLE);
 			    Gson gson = new Gson();
-				thisPlayerService.Play( gson.toJson(thisStation) );
+			    RadioDroid.globalPlayerService.Play( gson.toJson(thisStation) );
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
 			}
@@ -187,7 +216,7 @@ public class RadioStationDetailActivity extends Activity {
 	private void Stop() {
 		Log.v("stationdetail","STOP playerservice." );
 
-		if (thisPlayerService != null) {
+		if (RadioDroid.globalPlayerService != null) {
 			Log.v("stationdetail","STOP playerservice != null." );
 
 			try {
@@ -195,24 +224,11 @@ public class RadioStationDetailActivity extends Activity {
 				buttonPlay.setVisibility(View.VISIBLE);
 				Button buttonStop = (Button) findViewById(R.id.detail_button_stop);
 				buttonStop.setVisibility(View.GONE);
-				thisPlayerService.Stop();
+				RadioDroid.globalPlayerService.Stop();
 			} catch (RemoteException e) {
 				Log.e("", "" + e);
 			}
 		}
 	}
 	
-	private ServiceConnection svcConn = new ServiceConnection() {
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			Log.v("", "Service came online");
-			thisPlayerService = IPlayerService.Stub.asInterface(binder);
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			Log.v("", "Service offline");
-			thisPlayerService = null;
-		}
-	};
-	
-
 }

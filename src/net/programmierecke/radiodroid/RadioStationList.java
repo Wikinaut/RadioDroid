@@ -61,7 +61,7 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 			TextView aTextViewBottomLine = (TextView) v.findViewById(R.id.textViewBottom);
 			
 			if (aTextViewTopLine != null) {
-				aTextViewTopLine.setText("" + aStation.Name);
+				aTextViewTopLine.setText("" + aStation.name);
 			}
 			
 			if (aTextViewBottomLine != null) {
@@ -72,13 +72,13 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 
 			// new DownloadImageTask(anImageView).execute(aStation.IconUrl);
 
-			if ( aStation.IconUrl.isEmpty() ) {
+			if ( aStation.iconUrl.isEmpty() ) {
 				
 				anImageView.setImageBitmap(null);
 			
-			} else if ( iconCache.containsKey(aStation.IconUrl) ) {
+			} else if ( iconCache.containsKey(aStation.iconUrl) ) {
 
-				Bitmap aBitmap = iconCache.get(aStation.IconUrl);
+				Bitmap aBitmap = iconCache.get(aStation.iconUrl);
 				
 				if ( aBitmap != null) {
 					
@@ -95,17 +95,17 @@ public class RadioStationList extends ArrayAdapter<RadioStation> implements Runn
 				try {
 					
 					// check download cache
-					String aFileNameIcon = Utils.getBase64(aStation.IconUrl);
+					String aFileNameIcon = Utils.getBase64(aStation.iconUrl);
 					Bitmap anIcon = BitmapFactory.decodeStream(thisContext.openFileInput(aFileNameIcon));
 					anImageView.setImageBitmap(anIcon);
-					iconCache.put(aStation.IconUrl, anIcon);
+					iconCache.put(aStation.iconUrl, anIcon);
 					
 				} catch (Exception e) {
 					
 					try {
 						
 						anImageView.setImageBitmap(null);
-						queuedDownloadJobs.put(new QueueItem(aStation.IconUrl, anImageView));
+						queuedDownloadJobs.put(new QueueItem(aStation.iconUrl, anImageView));
 						
 					} catch (InterruptedException e2) {
 						
