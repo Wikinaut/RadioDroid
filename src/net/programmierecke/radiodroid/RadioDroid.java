@@ -57,10 +57,10 @@ public class RadioDroid extends Application {
 	}
 	
 
-	public void setLastStationDetailedViewSeen() {
+	public void setLastStationDetailedViewSeen( boolean seen) {
 
 		RadioStation lastStation = getRadioStationPersistentStorage();
-		lastStation.detailedViewSeen = true;
+		lastStation.detailedViewSeen = seen;
 		putRadioStationPersistentStorage( lastStation );		    
 	}
 
@@ -72,6 +72,7 @@ public class RadioDroid extends Application {
 
 	public void setLastStationStatus(String status) {
 
+		Log.v("radiodroid","setlaststatus:"+status);
 		RadioStation lastStation = getRadioStationPersistentStorage();
 		lastStation.playStatus = status;
 		putRadioStationPersistentStorage( lastStation );		    

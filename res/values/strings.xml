@@ -13,7 +13,8 @@
     <string name="detail_exit">EXIT</string>
     
     <!-- Option menu items -->
-    <string name="exit_app">stop &amp; exit %1$s</string>
+    <string name="exit_app">exit %1$s</string>
+    <string name="stop_and_exit_app">stop &amp; exit %1$s</string>
     <string name="stop_playing">stop playing</string>
     <string name="top_votes">top votes</string>
     <string name="top_clicks">top clicks</string>
@@ -54,11 +55,11 @@
     <string name="preferences__settings_category_title">Settings</string>
 
     <string name="preferences__autoplay_settings_title">Last station on start &#8230;</string>
-    <string name="preferences__autoplay_settings_summary">When the App is started, the last station is &#8230;</string>
-    <string name="preferences__autoplay_play">played</string>
-    <string name="preferences__autoplay_last_status">played or paused (last mode)</string>
-    <string name="preferences__autoplay_pause">paused</string>
-    <string name="preferences__autoplay_none">(station list is shown)</string>
+    <string name="preferences__autoplay_settings_summary">When the App is started &#8230;</string>
+    <string name="preferences__autoplay_play">play last station</string>
+    <string name="preferences__autoplay_last_status">play or pause last station (last mode)</string>
+    <string name="preferences__autoplay_pause">pause last station</string>
+    <string name="preferences__autoplay_none">show the station list</string>
     
     <string name="preferences__refresh_station_list_title">Always refresh lists</string>
     <string name="preferences__refresh_station_list_summary">Whether station lists are updated on every view or only when the App is started (may be costly)</string>

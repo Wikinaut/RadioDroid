@@ -80,6 +80,8 @@ public class MainActivity extends ListActivity {
 		if ( !prefs.getBoolean( "pref_toggle_always_refresh_station_lists", true )
 				&& RadioDroid.globalRadioStationList != null ) {
 			
+			Log.v("mainactivity","createstationlist: skip present");
+
 			setListAdapter(RadioDroid.globalRadioStationList);
 		
 			return;
@@ -90,15 +92,23 @@ public class MainActivity extends ListActivity {
 
 		if ( ( globalGetStationListTask != null )
 			&& ( globalGetStationListTask.getStatus() == AsyncTask.Status.RUNNING ) ) {
+
+			Log.v("mainactivity","createstationlist: skip running");
+
+			if ( RadioDroid.globalRadioStationList != null ) {
+				setListAdapter(RadioDroid.globalRadioStationList);
+			}
 		
 			return;
 		}
 		
+		// station list creation
+		Log.v("mainactivity","createstationlist: task started");
+
 		globalGetStationListTask = new BackgroundTaskGetStationList();
 		RadioDroid.globalRadioStationList = new RadioStationList(this, R.layout.station_list);
 		setListAdapter(RadioDroid.globalRadioStationList);
 
-		// station list creation
 		globalGetStationListTask.execute( stationListUrl );
 				
 	}	
@@ -106,8 +116,19 @@ public class MainActivity extends ListActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		Log.v("mainactivity","onpause");
+
 		PlayerService thisService = new PlayerService();
 		thisService.unbindSafely( this, RadioDroid.globalPlayerServiceConnector );
+
+		// RadioDroid thisApp = (RadioDroid) getApplication();
+		// thisApp.setLastStationDetailedViewSeen( false );
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.v("mainactivity","ondestroy");
 	}
 	
 	@Override
@@ -118,6 +139,9 @@ public class MainActivity extends ListActivity {
 
 		RadioDroid thisApp = (RadioDroid) getApplication();
 		RadioStation lastRadioStation = thisApp.getRadioStationPersistentStorage();
+		Log.v("mainactivity","laststream:"+lastRadioStation.streamUrl);
+		Log.v("mainactivity","laststatus:"+lastRadioStation.playStatus);
+		Log.v("mainactivity","lastdetailedview:"+thisApp.getLastStationDetailedViewSeen());
 
         // Read the default values and set them as the current values.  
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);  
@@ -136,14 +160,12 @@ public class MainActivity extends ListActivity {
 				&& !lastRadioStation.streamUrl.equals("")
 				&& !thisApp.getLastStationDetailedViewSeen() ) {
 
-			// RadioDroid thisApp = (RadioDroid) getApplication();
-			// Log.v("mainactivity","oncreate:detailedviewseen:"+(thisApp.getLastStationDetailedViewSeen()?"1":"0") );
+			Log.v("mainactivity","oncreate:detailedviewseen:"+(thisApp.getLastStationDetailedViewSeen()?"1":"0") );
 
 			Toast.makeText(this, "Last played stream: " + lastRadioStation.streamUrl, Toast.LENGTH_LONG).show();
 			ClickOnItem( lastRadioStation );
 				
 		} else {
-			createStationList(Constants.TOP_CLICKS_URL);
 		}
 
 		if ( autoPlayPreferenceValue.equals( "autoplay_pause" ) ) {
@@ -169,7 +191,21 @@ public class MainActivity extends ListActivity {
 
         // Read the default values and set them as the current values.  
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);  
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		createStationList(Constants.TOP_CLICKS_URL);
+
+		ListView lv = getListView();
+		lv.setTextFilterEnabled(true);
+		// registerForContextMenu(lv);
+
+		lv.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object anObject = parent.getItemAtPosition(position);
+				if (anObject instanceof RadioStation) {
+					ClickOnItem( (RadioStation) anObject);
+				}
+			}
+		});
 
 		/*
 		if ( !prefs.getBoolean( "pref_toggle_allow_gprs_umts", false )
@@ -205,21 +241,6 @@ public class MainActivity extends ListActivity {
 		*/
 				
 		setTitle( Utils.getAppAndVersionName( this ) + " (" + getString(R.string.top_clicks) + ")" );
-
-		createStationList(Constants.TOP_CLICKS_URL);
-
-		ListView lv = getListView();
-		lv.setTextFilterEnabled(true);
-		// registerForContextMenu(lv);
-
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Object anObject = parent.getItemAtPosition(position);
-				if (anObject instanceof RadioStation) {
-					ClickOnItem( (RadioStation) anObject);
-				}
-			}
-		});
 		
 	}
 
@@ -227,8 +248,8 @@ public class MainActivity extends ListActivity {
 
 		Log.v("mainactivity","clickonitem");
 
-		// RadioDroid thisApp = (RadioDroid) getApplication();
-		// Log.v("mainactivity","clickonitem:detailedviewseen:"+(thisApp.getLastStationDetailedViewSeen()?"1":"0") );
+		RadioDroid thisApp = (RadioDroid) getApplication();
+		Log.v("mainactivity","clickonitem:detailedviewseen:"+(thisApp.getLastStationDetailedViewSeen()?"1":"0") );
 
 		PlayerService thisService = new PlayerService();
 		thisService.unbindSafely( this, RadioDroid.globalPlayerServiceConnector );
@@ -239,20 +260,28 @@ public class MainActivity extends ListActivity {
 	}
 
 	final int MENU_EXIT = 0;
-	final int MENU_STOP = 1;
-	final int MENU_TOPVOTES = 2;
-	final int MENU_TOPCLICKS = 3;
-	final int MENU_ALLSTATIONS = 4;
-	final int MENU_SEARCHSTATIONS = 5;
+	final int MENU_STOP_AND_EXIT = 1;
+	final int MENU_STOP = 2;
+	final int MENU_TOPVOTES = 3;
+	final int MENU_TOPCLICKS = 4;
+	final int MENU_ALLSTATIONS = 5;
+	final int MENU_SEARCHSTATIONS = 6;
 	final int MENU_SETTINGS = 9;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
+		RadioDroid thisApp = (RadioDroid) getApplication();
+		thisApp.setLastStationDetailedViewSeen( true );
+
 		menu.add(Menu.NONE, MENU_EXIT, Menu.NONE, String.format(
-			getString( R.string.exit_app ),
-			Utils.getAppName(getApplicationContext()) )
-		);
+				getString( R.string.exit_app ),
+				Utils.getAppName(getApplicationContext()) )
+			);
+		menu.add(Menu.NONE, MENU_STOP_AND_EXIT, Menu.NONE, String.format(
+				getString( R.string.stop_and_exit_app ),
+				Utils.getAppName(getApplicationContext()) )
+			);
 		menu.add(Menu.NONE, MENU_STOP, Menu.NONE, getString( R.string.stop_playing ) );
 		menu.add(Menu.NONE, MENU_TOPVOTES, Menu.NONE, getString( R.string.top_votes ) );
 		menu.add(Menu.NONE, MENU_TOPCLICKS, Menu.NONE, getString( R.string.top_clicks ) );
@@ -272,7 +301,7 @@ public class MainActivity extends ListActivity {
 		
 		// check selected menu item
 
-		if (item.getItemId() == MENU_EXIT) {
+		if (item.getItemId() == MENU_STOP_AND_EXIT) {
 			Log.v(TAG, "menu : exit");
 			try {
 				RadioDroid.globalPlayerService.Stop();
@@ -280,6 +309,17 @@ public class MainActivity extends ListActivity {
 				// TODO Auto-generated catch block
 				Log.e(TAG, "" + e);
 			}
+			RadioDroid thisApp = (RadioDroid) getApplication();
+			thisApp.setLastStationDetailedViewSeen( false );
+
+			finish();
+		}
+
+		if (item.getItemId() == MENU_EXIT) {
+
+			RadioDroid thisApp = (RadioDroid) getApplication();
+			thisApp.setLastStationDetailedViewSeen( false );
+
 			finish();
 		}
 

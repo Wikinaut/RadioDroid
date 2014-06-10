@@ -37,7 +37,7 @@ public class RadioStationDetailActivity extends Activity {
 		thisService.unbindSafely( this, RadioDroid.globalPlayerServiceConnector );
 
 		RadioDroid thisApp = (RadioDroid) getApplication(); 
-		thisApp.setLastStationDetailedViewSeen();
+		thisApp.setLastStationDetailedViewSeen(true);
 
 	}
 	
@@ -53,8 +53,7 @@ public class RadioStationDetailActivity extends Activity {
 		Log.v("stationdetail","onResume" );
 		
 		RadioDroid thisApp = (RadioDroid) getApplication(); 
-		// thisApp.setLastStationDetailedViewSeen();
-		// Log.v("stationdetail","onresume:detailedviewseen:"+(thisApp.getLastStationDetailedViewSeen()?"1":"0") );
+
 		lastRadioStation = thisApp.getRadioStationPersistentStorage();
 
 		setContentView(R.layout.station_detail);
@@ -84,6 +83,9 @@ public class RadioStationDetailActivity extends Activity {
 						RadioDroid thisApp = (RadioDroid) getApplication(); 
 						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(thisApp);
 						String autoPlayPreferenceValue = prefs.getString("pref_autoplay_settings", "(undefined)" );
+
+						Log.v("stationdetail","pref:autplay:"+autoPlayPreferenceValue);
+						Log.v("stationdetail","laststatus:"+thisApp.getLastStationStatus());
 
 						if ( autoPlayPreferenceValue.equals( "autoplay_play" ) ) {
 							Play();

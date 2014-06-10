@@ -88,15 +88,14 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 					
 			}
 	
-			thisApp.setLastStationStatus( "play" );
-			thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
+			// thisApp.setLastStationStatus( "play" );
+			// thisApp.putJsonRadioStationPersistentStorage( theJsonRadioStation );
 	
 		}
 
 		public void Stop() throws RemoteException {
 			RadioDroid thisApp = (RadioDroid) getApplication();
 			PlayerService.this.stop();
-			thisApp.setLastStationStatus( "stop" );
 		}
 
 	};
@@ -144,10 +143,15 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		stopForeground(true);
 	}
 
-	public void playUrl( RadioStation thisStation ) {
+	public void playUrl( RadioStation station ) {
+		final RadioStation thisStation = station;
 		final String thisStationName = thisStation.name;
 		final String thisStationStreamUrl = thisStation.streamUrl;
-		
+
+		Log.v("playerservice","playurl");
+		RadioDroid thisApp = (RadioDroid) getApplication();
+		thisApp.setLastStationStatus( "play" );
+
 		new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... stations) {
@@ -174,6 +178,8 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 					thisPlayer.prepare();
 					Log.d(TAG, "Start playing "+thisStationStreamUrl);
 					showNotificationMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
+					thisApp.putRadioStationPersistentStorage( thisStation );
+					thisApp.setLastStationStatus( "play" );
 					thisPlayer.start();
 				} catch (IllegalArgumentException e) {
 					Log.e(TAG, "" + e);
@@ -201,6 +207,7 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	}
 
 	public void stop() {
+		Log.v("playerservice","stop");
 		RadioDroid thisApp = (RadioDroid) getApplication();
 		thisApp.setLastStationStatus( "stop" );
 		if (thisPlayer != null) {
