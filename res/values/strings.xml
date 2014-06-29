@@ -48,6 +48,7 @@
     <!-- About application activity items -->
     <string name="about__title_version">Version</string>
     <string name="about__title_changelog">List of changes</string>
+    <string name="about__title_communityradio">Radio station list webpage</string>
     <string name="about__title_source_code">Source code</string>
     <string name="about__title_license">License</string>
     
@@ -82,6 +83,7 @@
     <string name="preferences__top_votes">Top votes</string>
     <string name="preferences__top_clicks">Top clicks</string>
     <string name="preferences__all_stations">All stations</string>
+    <string name="preferences__community_radio">Radio station list webpage</string>
     <string name="preferences__search_stations">Search Stations</string>
     <string name="preferences__about_application_category_title">About</string>
     <string name="preferences__version">Version</string>

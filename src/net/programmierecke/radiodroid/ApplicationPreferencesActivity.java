@@ -4,16 +4,13 @@ import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +38,8 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	private static final String ABOUT_APPLICATION = "pref_key_about_application";
 	private static final String AUTOPLAY_SETTINGS = "pref_autoplay_settings";
 	private static final String NETWORK_SETTINGS = "pref_network_settings";
+	private static final String COMMUNITY_RADIO = "pref_key_community_radio";
+	
 
 
 	@Override
@@ -66,6 +65,7 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
     this.findPreference(ABOUT_APPLICATION).setOnPreferenceClickListener(new AboutApplicationListener());
     this.findPreference(AUTOPLAY_SETTINGS).setOnPreferenceChangeListener(new ListSummaryListener());
     this.findPreference(NETWORK_SETTINGS).setOnPreferenceChangeListener(new ListSummaryListener());
+    this.findPreference(COMMUNITY_RADIO).setOnPreferenceClickListener(new UrlClickListener());
 
     initializeListSummary((ListPreference) findPreference(AUTOPLAY_SETTINGS));
     initializeListSummary((ListPreference) findPreference(NETWORK_SETTINGS));
@@ -218,6 +218,16 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 
   }
 
+  private class UrlClickListener implements Preference.OnPreferenceClickListener {
+	    @Override
+	    public boolean onPreferenceClick(Preference preference) {
+
+	    	startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.COMMUNITYRADIO_URL)));
+	    	return true;
+
+	    }
+  }
+  
   private class AboutApplicationListener implements Preference.OnPreferenceClickListener {
 	    @Override
 	    public boolean onPreferenceClick(Preference preference) {

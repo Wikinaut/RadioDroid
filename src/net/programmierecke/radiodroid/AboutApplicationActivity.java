@@ -15,6 +15,7 @@ public final class AboutApplicationActivity extends PreferenceActivity {
 
   private static final String KEY_ABOUT_VERSION = "about_version";
   private static final String KEY_ABOUT_CHANGELOG = "about_changelog";
+  private static final String KEY_ABOUT_COMMUNITYRADIO = "about_communityradio";
   private static final String KEY_ABOUT_SOURCE = "about_source_code";
   private static final String KEY_ABOUT_LICENSE = "about_license";
 
@@ -28,6 +29,7 @@ public final class AboutApplicationActivity extends PreferenceActivity {
     Context context = AboutApplicationActivity.this;
     findPreference(KEY_ABOUT_VERSION).setSummary(Utils.getAppAndVersionName(context));
     findPreference(KEY_ABOUT_CHANGELOG).setSummary(Constants.CHANGELOG_URL);
+    findPreference(KEY_ABOUT_COMMUNITYRADIO).setSummary(Constants.COMMUNITYRADIO_URL);
     findPreference(KEY_ABOUT_SOURCE).setSummary(Constants.SOURCE_URL);
     findPreference(KEY_ABOUT_LICENSE).setSummary(Constants.LICENSE_URL);
 
@@ -54,8 +56,10 @@ public final class AboutApplicationActivity extends PreferenceActivity {
 
     if (KEY_ABOUT_CHANGELOG.equals(key)) {
       startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.CHANGELOG_URL)));
+    } else if (KEY_ABOUT_COMMUNITYRADIO.equals(key)) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.COMMUNITYRADIO_URL)));
     } else if (KEY_ABOUT_SOURCE.equals(key)) {
-      startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.SOURCE_URL)));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.SOURCE_URL)));
     } else if (KEY_ABOUT_LICENSE.equals(key)) {
       startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.LICENSE_URL)));
     }

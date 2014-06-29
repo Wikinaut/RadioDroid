@@ -66,13 +66,17 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 	private final IPlayerService.Stub playerServiceBinder = new IPlayerService.Stub() {
 
 		public void Play( String theJsonRadioStation) throws RemoteException {
+
+			Log.v("playerservice","play");
+
 			RadioDroid thisApp = (RadioDroid) getApplication();
 	
 			Gson gson = new Gson();
 			playingStation = gson.fromJson( theJsonRadioStation, RadioStation.class );
 			
 			if ( !thisApp.isPlayingSameLastStationUrl( playingStation.streamUrl ) ) {
-				PlayerService.this.stop();
+				Log.v("playerservice","not PlayingSameLastStation");
+				// PlayerService.this.stop();
 				PlayerService.this.playUrl( playingStation );
 
  				if	( !thisApp.isSameLastStationUrl( playingStation.streamUrl ) ) {
@@ -94,7 +98,6 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 		}
 
 		public void Stop() throws RemoteException {
-			RadioDroid thisApp = (RadioDroid) getApplication();
 			PlayerService.this.stop();
 		}
 
@@ -172,12 +175,12 @@ public class PlayerService extends Service implements OnBufferingUpdateListener 
 				}
 
 				try {
-					showNotificationMessage(thisStationName, "Preparing stream", "Preparing stream");
+					showNotificationMessage(thisStationName, "Loading", "Loading " + thisStationName);
 					thisPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					thisPlayer.setDataSource(decodedUrl);
 					thisPlayer.prepare();
 					Log.d(TAG, "Start playing "+thisStationStreamUrl);
-					showNotificationMessage(thisStationName, "Playing", "Playing '" + thisStationName + "'");
+					showNotificationMessage(thisStationName, "Playing", "Playing " + thisStationName);
 					thisApp.putRadioStationPersistentStorage( thisStation );
 					thisApp.setLastStationStatus( "play" );
 					thisPlayer.start();

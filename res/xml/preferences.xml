@@ -49,9 +49,12 @@
     	
 	  	<Preference android:key="pref_key_top_clicks"
                     android:title="@string/preferences__top_clicks"/>
-	  	
+    		  	
         <Preference android:key="pref_key_all_stations"
                     android:title="@string/preferences__all_stations"/>
+        
+        <Preference android:key="pref_key_community_radio"
+                    android:title="@string/preferences__community_radio"/>
         
         </PreferenceScreen>
         
