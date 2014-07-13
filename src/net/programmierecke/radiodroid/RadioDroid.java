@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
