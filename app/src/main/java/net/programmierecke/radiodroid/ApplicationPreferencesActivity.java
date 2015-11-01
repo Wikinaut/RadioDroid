@@ -145,30 +145,30 @@ public final class ApplicationPreferencesActivity extends PreferenceActivity {
 	}
 
   
-  private void createStationList(final String theURL) {
-		Context context = ApplicationPreferencesActivity.this;
-		thisProgressLoading = ProgressDialog.show(context, "", "Loading...");
+	  private void createStationList(final String theURL) {
+			Context context = ApplicationPreferencesActivity.this;
+			thisProgressLoading = ProgressDialog.show(context, "", "Loading...");
 
-		new AsyncTask<Void, Void, String>() {
-			@Override
-			protected String doInBackground(Void... params) {
-				return Utils.getFromUrl(theURL);
-			}
-
-			@Override
-			protected void onPostExecute(String result) {
-				if (!isFinishing()) {
-					thisArrayAdapter.clear();
-					for (RadioStation aStation : Utils.decodeJson(result)) {
-						thisArrayAdapter.add(aStation);
-					}
-					getListView().invalidate();
-					thisProgressLoading.dismiss();
+			new AsyncTask<Void, Void, String>() {
+				@Override
+				protected String doInBackground(Void... params) {
+					return Utils.getFromUrl(theURL);
 				}
-				super.onPostExecute(result);
-			}
-		}.execute();
-	}
+
+				@Override
+				protected void onPostExecute(String result) {
+					if (!isFinishing()) {
+						thisArrayAdapter.clear();
+						for (RadioStation aStation : Utils.decodeJson(result)) {
+							thisArrayAdapter.add(aStation);
+						}
+						getListView().invalidate();
+						thisProgressLoading.dismiss();
+					}
+					super.onPostExecute(result);
+				}
+			}.execute();
+		}
 
   private class StationListListener implements Preference.OnPreferenceClickListener {
 	  @Override

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <string name="app_name">RadioDroid</string>
-    
     <string name="detail_tags">Tags</string>
     <string name="detail_id">internal station id (pos./neg. votes)</string>
     <string name="detail_country">Country</string>
@@ -89,6 +87,6 @@
     <string name="preferences__version">Version</string>
                 
     <string name="loading_station_details_from_server">Loading station details from the server</string>
-    <string name="loading_station_list_from_server">Updating the station list from the server</string>
+    <string name="loading_station_list_from_server">Updating the station list from the server. This may take up to a minute.</string>
     
 </resources>

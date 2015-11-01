@@ -1,12 +1,24 @@
 package net.programmierecke.radiodroid;
  
 import java.util.List;
- 
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import android.util.Log;
 import android.widget.ArrayAdapter;
  
 public class MainActivity2 extends Activity {
+
+	ProgressDialog thisProgressLoading;
+	BackgroundTaskGetStationList2 globalGetStationListTask2;
+
+    // for our logs
+    public static final String TAG = "MainActivity2.java";
  
     /*
      * Change to type CustomAutoCompleteView instead of AutoCompleteTextView
@@ -34,9 +46,8 @@ public class MainActivity2 extends Activity {
              
             // instantiate database handler
             databaseH = new DatabaseHandler(MainActivity2.this);
-             
-            // put sample data to database
-            insertSampleData();
+            
+            createStationListDatabase();
              
             // autocompletetextview is in activity_main.xml
             myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.myautocomplete);
@@ -54,34 +65,7 @@ public class MainActivity2 extends Activity {
             e.printStackTrace();
         }
     }
-     
-    public void insertSampleData(){
-         
-        // CREATE
-        databaseH.create( new MyObject("January") );
-        databaseH.create( new MyObject("February") );
-        databaseH.create( new MyObject("March") );
-        databaseH.create( new MyObject("April") );
-        databaseH.create( new MyObject("May") );
-        databaseH.create( new MyObject("June") );
-        databaseH.create( new MyObject("July") );
-        databaseH.create( new MyObject("August") );
-        databaseH.create( new MyObject("September") );
-        databaseH.create( new MyObject("October") );
-        databaseH.create( new MyObject("November") );
-        databaseH.create( new MyObject("December") );
-        databaseH.create( new MyObject("New Caledonia") );
-        databaseH.create( new MyObject("New Zealand") );
-        databaseH.create( new MyObject("Papua New Guinea") );
-        databaseH.create( new MyObject("COFFEE-1K") );
-        databaseH.create( new MyObject("coffee raw") );
-        databaseH.create( new MyObject("authentic COFFEE") );
-        databaseH.create( new MyObject("k12-coffee") );
-        databaseH.create( new MyObject("view coffee") );
-        databaseH.create( new MyObject("Indian-coffee-two") );
-         
-    }
-     
+          
     // this function is used in CustomAutoCompleteTextChangedListener.java
     public String[] getItemsFromDb(String searchTerm){
          
@@ -95,10 +79,61 @@ public class MainActivity2 extends Activity {
         for (MyObject record : products) {
              
             item[x] = record.objectName;
+        	// Log.e(TAG, "item: " + item[x]);
+           
             x++;
         }
          
         return item;
     }
+    
+	private class BackgroundTaskGetStationList2 extends AsyncTask <String, Void, String> {
+
+		@Override
+		protected void onPreExecute() {
+			thisProgressLoading = ProgressDialog.show(
+				MainActivity2.this,
+				"",
+				getString(R.string.loading_station_list_from_server)
+			);
+		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			return Utils.getFromUrl( params[0] );
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			
+			if (!isFinishing()) {
+				
+				int i=0;
+
+				for (RadioStation aStation : Utils.decodeJson(result)) {
+					
+		    		// Log.e(TAG, aStation.name + " created.");
+		    		databaseH.create( aStation );
+		    		i++;
+
+				}
+
+				Log.e(TAG, String.valueOf(i) + " station entries created.");
+				thisProgressLoading.dismiss();
+			}
+			
+			super.onPostExecute(result);
+			
+		}
+	}
+
+	
+    
+    public void createStationListDatabase() {
+	
+    	globalGetStationListTask2 = new BackgroundTaskGetStationList2();
+    	globalGetStationListTask2.execute( Constants.ALL_STATIONS_URL );
+  	
+	}
  
 }

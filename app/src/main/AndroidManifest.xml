@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.programmierecke.radiodroid"
     android:versionCode="26"
-    android:versionName="0.7.3" >
+    android:versionName="0.7.3-autocomplete" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+                
         <activity
             android:name="ApplicationPreferencesActivity">
         </activity>

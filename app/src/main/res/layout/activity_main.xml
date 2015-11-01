@@ -14,7 +14,13 @@
         android:id="@+id/myautocomplete"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:completionThreshold="1" >
+        android:completionThreshold="2" >
     </net.programmierecke.radiodroid.CustomAutoCompleteView>
  
+    <AutoCompleteTextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/primary_text_light"
+    />
+
 </LinearLayout>

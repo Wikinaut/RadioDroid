@@ -2,12 +2,14 @@ package net.programmierecke.radiodroid;
  
 import java.util.ArrayList;
 import java.util.List;
- 
+
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.DatabaseUtils;
 import android.util.Log;
  
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -19,10 +21,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 4;
  
     // database name
-    protected static final String DATABASE_NAME = "NinjaDatabase2";
+    protected static final String DATABASE_NAME = "StationList";
  
     // table details
-    public String tableName = "locations";
+    public String tableName = "stations";
     public String fieldObjectId = "id";
     public String fieldObjectName = "name";
  
@@ -31,6 +33,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
  
+    /**
+     * This method acts as an alias for the sqlEscapeString(str) method in
+     * DatabaseUtils.
+     * 
+     * @param str
+     * @return
+     */
+    private static String sant(String str) {
+        return DatabaseUtils.sqlEscapeString(str);
+    }
+    
     // creating table
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -59,35 +72,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
  
     // create new record
     // @param myObj contains details to be added as single row.
-    public boolean create(MyObject myObj) {
+    public boolean create( RadioStation station) {
  
         boolean createSuccessful = false;
  
-        if(!checkIfExists(myObj.objectName)){
+        if(true /* !checkIfExists(station.name) */ ){
                      
             SQLiteDatabase db = this.getWritableDatabase();
              
             ContentValues values = new ContentValues();
-            values.put(fieldObjectName, myObj.objectName);
+            values.put( fieldObjectName, station.name );
             createSuccessful = db.insert(tableName, null, values) > 0;
              
             db.close();
              
-            if(createSuccessful){
-                Log.e(TAG, myObj.objectName + " created.");
-            }
+            // if(createSuccessful){
+            //    Log.e(TAG, station.name + " created.");
+            // }
         }
          
         return createSuccessful;
     }
      
     // check if a record exists so it won't insert the next time you run this code
-    public boolean checkIfExists(String objectName){
+    public boolean checkIfExists(String name){
          
         boolean recordExists = false;
-                 
+		Log.e(TAG, "checking " + name );
+         
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT " + fieldObjectId + " FROM " + tableName + " WHERE " + fieldObjectName + " = '" + objectName + "'", null);
+        Cursor cursor = db.rawQuery("SELECT " + fieldObjectId + " FROM " + tableName + " WHERE " + fieldObjectName + " = " + sant( name ), null);
          
         if(cursor!=null) {
              
@@ -110,22 +124,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // select query
         String sql = "";
         sql += "SELECT * FROM " + tableName;
-        sql += " WHERE " + fieldObjectName + " LIKE '%" + searchTerm + "%'";
+        sql += " WHERE " + fieldObjectName + " LIKE " + sant( "%" + searchTerm + "%" );
         sql += " ORDER BY " + fieldObjectId + " DESC";
-        sql += " LIMIT 0,5";
+        sql += " LIMIT 0,10";
  
         SQLiteDatabase db = this.getWritableDatabase();
  
         // execute the query
-        Cursor cursor = db.rawQuery(sql, null);
+        Cursor cursor = db.rawQuery( sql, null );
  
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
  
                 // int productId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(fieldProductId)));
-                String objectName = cursor.getString(cursor.getColumnIndex(fieldObjectName));
-                MyObject myObject = new MyObject(objectName);
+                String name = cursor.getString(cursor.getColumnIndex(fieldObjectName));
+                MyObject myObject = new MyObject(name);
  
                 // add to list
                 recordsList.add(myObject);
@@ -139,5 +153,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return the list of records
         return recordsList;
     }
- 
+
 }
