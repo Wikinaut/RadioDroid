@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.programmierecke.radiodroid"
     android:versionCode="26"
-    android:versionName="0.7.3-autocomplete" >
+    android:versionName="0.7.4-autocomplete" >
 
     <uses-sdk
         android:minSdkVersion="9"

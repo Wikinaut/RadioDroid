@@ -50,7 +50,7 @@ public class Utils {
 					String country = html(o.getString("country"));
 					country = country.replace("United States of America", "USA");
 					
-					String subCountry = html(o.getString("subcountry"));
+					String subCountry = html(o.getString("state"));
 
 					if ( !country.isEmpty() && !subCountry.isEmpty() ) {
 						
