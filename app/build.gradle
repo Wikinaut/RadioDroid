@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "29.0.2"
 
     defaultConfig {
         applicationId "net.programmierecke.radiodroid"
@@ -66,20 +66,22 @@ android {
                 return stdout.toString().trim()
             }
 
-            def manifestParser = new com.android.builder.core.DefaultManifestParser()
-            def manifestVersionName = manifestParser.getVersionName(android.sourceSets.main.manifest.srcFile)
+//            def manifestParser = new com.android.builder.core.DefaultManifestParser()
+//            def manifestVersionName = manifestParser.getVersionName(android.sourceSets.main.manifest.srcFile)
+            def manifestVersionName = getVersionName()
             def finalName = appName + "-"
             if (!manifestVersionName.isEmpty()) {
                 finalName += manifestVersionName + "."
             }
             finalName += variant.versionCode + "-" + gitVersion() + ".apk"
-            output.outputFile = new File(output.outputFile.parent, finalName)
+//            output.outputFileName = new File(output.outputFile.parent, finalName)
+            output.outputFileName = finalName
         }
     }
 
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.0'
-    compile 'com.google.code.gson:gson:2.2.4'
+    implementation 'com.android.support:support-v4:25.3.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
